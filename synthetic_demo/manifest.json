@@ -1,0 +1,137 @@
+{
+  "synthetic": true,
+  "period": {
+    "start": "2026-04-01",
+    "end": "2026-09-30"
+  },
+  "currency": "SGD",
+  "notice": "Entirely fictional test data. No real bank, account holder, account number or bank connection.",
+  "scenarios": [
+    {
+      "id": "steady-income",
+      "title": "Steady income",
+      "description": "Fictional salary and rent in all six months; all balances add up.",
+      "file": "steady-income.csv",
+      "filename": "steady-income.csv",
+      "currency": "SGD",
+      "expected": {
+        "verified": true,
+        "income": 4800.0,
+        "rent": 1600.0,
+        "income_ok": true,
+        "rent_ok": true,
+        "buffer_ok": true,
+        "error": false,
+        "notes": "All four checks pass. Typical monthly income SGD 4,800; rent SGD 1,600; rent-to-income ratio 33.3%."
+      }
+    },
+    {
+      "id": "edited-balances",
+      "title": "Edited balance",
+      "description": "One fictional balance has been increased by SGD 2,500 without changing its transactions.",
+      "file": "edited-balances.csv",
+      "filename": "edited-balances.csv",
+      "currency": "SGD",
+      "expected": {
+        "verified": false,
+        "income": 4800.0,
+        "rent": 1600.0,
+        "income_ok": true,
+        "rent_ok": true,
+        "buffer_ok": true,
+        "error": false,
+        "notes": "Two rows fail the running-balance check. Income and rent may be calculated, but the failed statement must not receive an eligible summary PDF."
+      }
+    },
+    {
+      "id": "missed-rent",
+      "title": "Missing July rent",
+      "description": "Fictional July rent is absent; the remaining running balances are recalculated correctly.",
+      "file": "missed-rent.csv",
+      "filename": "missed-rent.csv",
+      "currency": "SGD",
+      "expected": {
+        "verified": true,
+        "income": 4800.0,
+        "rent": 1600.0,
+        "income_ok": true,
+        "rent_ok": false,
+        "buffer_ok": true,
+        "error": false,
+        "notes": "Balances pass. Rent appears in 5 of 6 months, with Jul 2026 named as missing. Typical rent remains SGD 1,600."
+      }
+    },
+    {
+      "id": "overdraft",
+      "title": "Overdraft",
+      "description": "A fictional low opening balance produces four negative balances in April.",
+      "file": "overdraft.csv",
+      "filename": "overdraft.csv",
+      "currency": "SGD",
+      "expected": {
+        "verified": true,
+        "income": 4800.0,
+        "rent": 1600.0,
+        "income_ok": true,
+        "rent_ok": true,
+        "buffer_ok": false,
+        "error": false,
+        "notes": "Balances, income and rent pass. Four rows are below zero; the lowest balance is SGD -1,620.50."
+      }
+    },
+    {
+      "id": "irregular-income",
+      "title": "Irregular income",
+      "description": "Fictional monthly receipts vary too widely for the regular-income rule.",
+      "file": "irregular-income.csv",
+      "filename": "irregular-income.csv",
+      "currency": "SGD",
+      "expected": {
+        "verified": true,
+        "income": null,
+        "rent": 1600.0,
+        "income_ok": false,
+        "rent_ok": true,
+        "buffer_ok": true,
+        "error": false,
+        "notes": "Balances and rent pass. No regular income is found, so the rent-to-income ratio is unavailable. This does not mean there was no income."
+      }
+    },
+    {
+      "id": "out-of-order",
+      "title": "Out-of-order transactions",
+      "description": "Two fictional May transactions are swapped while their original balances remain attached.",
+      "file": "out-of-order.csv",
+      "filename": "out-of-order.csv",
+      "currency": "SGD",
+      "expected": {
+        "verified": false,
+        "income": 4800.0,
+        "rent": 1600.0,
+        "income_ok": true,
+        "rent_ok": true,
+        "buffer_ok": true,
+        "error": false,
+        "notes": "Dates are out of order and three running-balance rows fail. An eligible summary PDF must not be issued."
+      }
+    },
+    {
+      "id": "malformed-values",
+      "title": "Unreadable amount",
+      "description": "The fictional opening row contains the text not-a-number in its amount column.",
+      "file": "malformed-values.csv",
+      "filename": "malformed-values.csv",
+      "currency": "SGD",
+      "expected": {
+        "verified": null,
+        "income": null,
+        "rent": null,
+        "income_ok": null,
+        "rent_ok": null,
+        "buffer_ok": null,
+        "error": true,
+        "notes": "Reject the upload with a readable validation error. Do not replace unreadable financial values with zero or issue a result."
+      }
+    }
+  ]
+}

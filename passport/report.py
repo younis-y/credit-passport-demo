@@ -14,7 +14,7 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 GREEN, AMBER, GREY = colors.HexColor("#1a7f37"), colors.HexColor("#9a6700"), colors.HexColor("#57606a")
 
 
-def build_pdf(passport, currency, rate, rate_source, applicant="", code="", source=""):
+def build_pdf(passport, currency, rate, rate_source, applicant="", code="", source="", *, demo=False):
     if not passport["verified"]:
         raise ValueError("No passport is issued for a statement that does not add up.")
     styles = getSampleStyleSheet()
@@ -23,11 +23,13 @@ def build_pdf(passport, currency, rate, rate_source, applicant="", code="", sour
     start, end = passport["period"]
 
     def both(value):
-        return "n/a" if value is None else f"{currency} {value:,.0f}\n(about £{value * rate:,.0f})"
+        if value is None:
+            return "n/a"
+        return f"{currency} {value:,.0f}" + (f"\n(about £{value * rate:,.0f})" if rate is not None else "")
 
     ratio = passport["rent_to_income"]
     figures = Table(
-        [["Monthly income", "Monthly rent", "Rent as share of income"],
+        [["Typical recurring credit" if demo else "Monthly income", "Typical rent payment" if demo else "Monthly rent", "Rent / recurring credit" if demo else "Rent as share of income"],
          [both(passport["monthly_income"]), both(passport["monthly_rent"]), "n/a" if ratio is None else f"{ratio:.0%}"]],
         colWidths=[58 * mm] * 3,
     )
@@ -37,7 +39,7 @@ def build_pdf(passport, currency, rate, rate_source, applicant="", code="", sour
                                  ("TOPPADDING", (0, 0), (-1, -1), 8), ("BOTTOMPADDING", (0, 0), (-1, -1), 8)]))
 
     rows = [["", "Check", "Result"]] + [
-        ["PASS" if f.ok else "NOTE", f.label, Paragraph(f.detail, cell)] for f in passport["findings"]
+        ["PASS" if f.ok else "NOTE", f.label, Paragraph(escape(f.detail), cell)] for f in passport["findings"]
     ]
     checks = Table(rows, colWidths=[16 * mm, 42 * mm, 116 * mm])
     style = [("FONTSIZE", (0, 0), (-1, -1), 9), ("TEXTCOLOR", (0, 0), (-1, 0), GREY), ("VALIGN", (0, 0), (-1, -1), "TOP"),
@@ -48,6 +50,8 @@ def build_pdf(passport, currency, rate, rate_source, applicant="", code="", sour
     out = io.BytesIO()
     SimpleDocTemplate(out, pagesize=A4, topMargin=20 * mm, bottomMargin=18 * mm, title="Credit Passport").build([
         Paragraph("Credit Passport", styles["Title"]),
+        *([Paragraph("SYNTHETIC DEMO - not for lending or tenancy decisions", styles["Heading3"]),
+           Spacer(1, 6)] if demo else []),
         *([Paragraph(f"Prepared for <b>{escape(applicant)}</b> ({name_note(source)}).", styles["Normal"]),
            Spacer(1, 4)] if applicant else []),
         Paragraph(f"Summary of a bank statement covering {start:%d %B %Y} to {end:%d %B %Y}. "
@@ -58,12 +62,17 @@ def build_pdf(passport, currency, rate, rate_source, applicant="", code="", sour
         Paragraph("What this does not prove", styles["Heading3"]),
         Paragraph("This is a summary of past bank activity. It is not a credit score or a lending decision. "
                   "The figures come from a statement supplied by the applicant: the check confirms the statement "
-                  "adds up, which catches edited figures but not a statement invented from scratch.", cell),
+                  "adds up and dates are ordered. It can detect edits that break the running-balance arithmetic; "
+                  "it cannot establish authenticity, completeness or ownership.", cell),
+        *([Spacer(1, 6), Paragraph("The recurring credit is the median of a detected payment group, not total monthly income. "
+                                  "Rent timing is compared with the observed usual day, not a contractual due date. "
+                                  "Only the supplied balance rows are checked; the opening balance has no independent check.", cell)] if demo else []),
         Spacer(1, 10),
         *([Paragraph(f"<b>Verification code: {code}</b>", styles["Normal"]),
            Paragraph("Landlords: enter this code in Credit Passport under \"Verify a passport\" to see the summary "
                      "as it was issued. If the figures there differ from this page, this page has been altered.", cell),
            Spacer(1, 10)] if code else []),
-        Paragraph(f"1 {currency} = £{rate:.4f} ({rate_source}). Prototype built on fictional sample data.", small),
+        Paragraph((f"1 {escape(currency)} = £{rate:.4f} ({escape(rate_source)}). " if rate is not None else "No currency conversion applied. ")
+                  + "Prototype built on fictional sample data.", small),
     ])
     return out.getvalue()

@@ -11,6 +11,6 @@ jobs:
         with:
           python-version: "3.13"
           cache: pip
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-dev.txt
       # Tests use the CSV samples only, so no API key is needed here.
       - run: python -m pytest -q

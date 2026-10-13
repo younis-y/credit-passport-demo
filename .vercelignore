@@ -1,0 +1,13 @@
+.git
+.venv
+venv
+__pycache__
+.pytest_cache
+.env*
+.streamlit
+data
+tests
+docs
+requirements-streamlit.txt
+requirements-dev.txt
+app.py

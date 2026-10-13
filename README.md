@@ -59,7 +59,7 @@ Only balance consistency and date order determine whether a report can be issued
 | pytest | Automated tests | `pytest>=8` |
 | GitHub Actions | Test workflow on pushes and pull requests | [Workflow](.github/workflows/tests.yml) |
 
-These are lower bounds from [requirements.txt](requirements.txt), not a locked dependency set.
+These are lower bounds from [requirements-streamlit.txt](requirements-streamlit.txt), not a locked dependency set. [requirements.txt](requirements.txt) holds the smaller pinned set the Vercel demo installs.
 
 ## Architecture Overview
 
@@ -95,7 +95,7 @@ git clone https://github.com/younis-y/credit-passport-demo.git
 cd credit-passport-demo
 python3.13 -m venv ../credit-passport-venv
 source ../credit-passport-venv/bin/activate
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-streamlit.txt -r requirements-dev.txt
 python -m pytest -q
 ```
 
@@ -138,6 +138,17 @@ python -m passport samples/tampered.csv
 The first command prints `VERIFIED` and writes a PDF. The second prints `CANNOT VERIFY` and returns exit code `1`. For the genuine fixture, the rules find typical income of SGD 6,200, typical rent of SGD 2,400 and a rent-to-income ratio of about 38.7%. Its 67 rows include an opening balance on 31 March 2026 and transactions through 25 September 2026.
 
 The CLI defaults CSV currency to SGD, has no currency option and always uses `0.58` for its indicative GBP conversion. Use the browser or Python API to supply another CSV currency. The CLI does not fetch a live rate, save a registry record or issue a verification code. A `--pdf` path may overwrite an existing file, so choose an output path you intend to replace.
+
+### Vercel synthetic CSV demo
+
+A second, smaller interface in `server.py` (Flask) reuses the same Python checks and PDF report without an AI service, bank connection or database. It accepts synthetic CSV input and includes seven deterministic scenarios with an expected-results guide and a downloadable test pack.
+
+```sh
+python -m pip install -r requirements-dev.txt
+python -m flask --app server run --port 8510
+```
+
+Open [localhost:8510](http://localhost:8510), choose a scenario, inspect the findings and evidence, and download a synthetic report when the arithmetic and date-order checks pass. See [DEPLOYMENT.md](DEPLOYMENT.md) for the Vercel setup and its limits, and [the test data guide](synthetic_demo/README.md) for expected outcomes. This interface is stateless: it leaves out the Streamlit account, sharing, simulated bank and verification-code flows.
 
 ### CSV format
 

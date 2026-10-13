@@ -1,0 +1,8 @@
+streamlit>=1.45
+pandas>=2.2
+pdfplumber>=0.11
+anthropic>=0.77
+reportlab>=4.4
+requests>=2.32
+pytest>=8
+segno>=1.6

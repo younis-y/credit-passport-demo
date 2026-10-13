@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore an evidence-backed bank statement summary using synthetic CSV samples. No API key required.">
+  <title>Credit Passport — Synthetic demo</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="brand" aria-label="Credit Passport home"><span class="brand-mark" aria-hidden="true">CP</span>Credit Passport</a>
+    <span class="demo-pill">Synthetic demo</span>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="intro-title">
+      <p class="eyebrow">A clearer view of statement data</p>
+      <h1 id="intro-title">A statement.<br>A summary you can inspect.</h1>
+      <p class="intro">Check how income, rent and running balances become an evidence-backed summary. Start with fictional data, then explore the rows behind each finding.</p>
+      <div class="principles"><span>Fixed rules</span><span>Visible evidence</span><span>No API key</span></div>
+    </section>
+
+    <section class="workspace" aria-labelledby="start-title">
+      <div class="section-heading"><div><p class="eyebrow">01 / Choose your data</p><h2 id="start-title">Try a sample statement</h2></div><a href="/samples/download.zip" class="text-link">Download test pack <span aria-hidden="true">↗</span></a></div>
+      <p class="section-copy">Each scenario is generated data with a known outcome. Select one to run the checks.</p>
+      <div id="scenarios" class="scenario-grid" aria-label="Synthetic test scenarios"><p class="muted">Loading sample scenarios…</p></div>
+      <div class="upload-panel">
+        <div><h3>Or upload a synthetic CSV</h3><p>Use fictional data only. Your file is sent to the server for processing; this demo does not save it.</p></div>
+        <form id="upload-form">
+          <div class="upload-fields"><div class="field"><label for="statement">CSV file</label><input type="file" id="statement" name="statement" accept=".csv,text/csv" required><span class="field-note">UTF-8 CSV · up to 2 MB · 5,000 rows</span></div>
+          <div class="field"><label for="currency">Statement currency</label><select id="currency" name="currency" required><option value="">Select currency</option>{% for code, label in currencies.items() %}<option value="{{ code }}">{{ label }}</option>{% endfor %}</select><span class="field-note">Amounts do not identify their currency.</span></div></div>
+          <div class="upload-footer"><details class="format-help"><summary>CSV format</summary><p>Use <code>date,description,amount,balance</code>. Dates: <code>YYYY-MM-DD</code>. Money in is positive; money out is negative. Include the opening balance as a row with an amount of zero. Common debit/credit column names are also supported.</p></details><button type="submit" class="primary">Check CSV <span aria-hidden="true">→</span></button></div>
+        </form>
+      </div>
+    </section>
+
+    <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+    <div id="error" class="error-box" role="alert" hidden><h2 id="error-title">We could not read this statement</h2><p id="error-message"></p></div>
+
+    <section id="result" class="result" aria-labelledby="result-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">02 / Inspect the result</p><h2 id="result-title" tabindex="-1"></h2></div><span id="result-badge" class="result-badge"></span></div>
+      <p id="result-summary" class="section-copy"></p>
+      <p id="result-meta" class="result-meta"></p>
+      <div id="metrics" class="metrics"></div>
+      <div id="report-bar" class="report-bar" hidden><div><h3>A summary to keep</h3><p>Download a demo PDF with the findings. The transaction rows stay out of the report.</p></div><button id="download-report" class="primary" type="button">Download demo PDF <span aria-hidden="true">↓</span></button></div>
+      <div class="checks-heading"><h3>What the checks found</h3><span>Expand a finding to inspect its evidence</span></div>
+      <div id="findings" class="findings"></div>
+      <p class="evidence-note">Evidence row numbers refer to the parsed statement, ordered as processed. At most 100 evidence rows are shown per finding.</p>
+    </section>
+
+    <aside class="limitations" aria-labelledby="limits-title"><div class="limit-label">Read the limits</div><div><h2 id="limits-title">Arithmetic is not authenticity.</h2><p>A fabricated statement that adds up can pass. These checks do not verify a bank, account holder, employer or source of funds. Recurring credits are an estimate of income; rent can be inferred from payment patterns. The first balance has no previous row to check.</p><p>Payment timing is compared with the usual day in the data, not a contractual due date. This prototype is not a credit score, affordability assessment or lending decision.</p></div></aside>
+  </main>
+  <footer><span>Credit Passport</span><span>Synthetic CSV demonstration · Original-currency figures · No bank connection</span></footer>
+</body>
+</html>
