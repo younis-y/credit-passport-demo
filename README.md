@@ -2,6 +2,10 @@
 
 Turn a bank statement into a summary of recurring income, rent payments and observed balances.
 
+![Credit Passport welcome screen](docs/screenshots/1-welcome.png)
+
+Built in one evening at a fintech hackathon in London on 13 October 2026, hosted by Singapore Global Network and LSE Generate.
+
 ## Description
 
 Credit Passport is a Python prototype for people moving to the UK who want to share their overseas financial history with a landlord or letting agent. It reads a CSV or text-based PDF statement, checks the running balances and produces a PDF summary. The browser interface lets the applicant inspect the rows behind each finding, saves the issued summary locally and provides a code a landlord can use to retrieve it. The exported report and saved record omit the transaction table.
@@ -76,9 +80,9 @@ flowchart LR
 
 Streamlit and the command line share Python parsing and rules modules; PDF extraction sends statement text to Anthropic, and the browser separately requests a rate from Frankfurter. The web flow saves issued summaries in `data/issued.json`, while simulated bank connections read local fixtures. Upload bytes remain in Streamlit session state and parsed results are cached without an application-defined expiry; there is no separate backend API or database server.
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the data model, rule details and implementation limits, or download the [interactive architecture map](docs/diagrams/credit-passport.html) and open it locally. The map's [editable JSON](docs/diagrams/credit-passport.architecture.json) records its components and source references.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the data model, rule details and implementation limits, or open the [interactive architecture map](https://younis-y.github.io/credit-passport-demo/). The map's [editable JSON](docs/diagrams/credit-passport.architecture.json) records its components and source references.
 
-The [map publishing workflow](.github/workflows/architecture-pages.yml) publishes only the HTML diagram. The repository owner still needs to select **GitHub Actions** as the source in [Pages settings](https://github.com/younis-y/credit-passport/settings/pages), then run **Publish interactive architecture map** on `main` from the [Actions page](https://github.com/younis-y/credit-passport/actions/workflows/architecture-pages.yml). The hosted map and its interactive controls have not yet been verified.
+The [map publishing workflow](.github/workflows/architecture-pages.yml) publishes only the HTML diagram, to GitHub Pages at [younis-y.github.io/credit-passport-demo](https://younis-y.github.io/credit-passport-demo/). The hosted page loaded on 13 October 2026.
 
 ## Installation
 
@@ -171,13 +175,17 @@ PDF extraction sends the entire extracted statement text to Anthropic. Scanned P
 | Edited CSV | [samples/tampered.csv](samples/tampered.csv) |
 | Missed-rent CSV | [samples/missed_rent.csv](samples/missed_rent.csv) |
 | Indian-rupee CSV | [samples/india.csv](samples/india.csv) |
-| Interactive system map | [Open the Archify map](docs/diagrams/credit-passport.html) after downloading the checkout |
+| Interactive system map | [Open the Archify map](https://younis-y.github.io/credit-passport-demo/) |
 | Application screenshots | Below, from the fictional demo data |
-| Public deployment | Not documented or verified |
+| Public deployment | The architecture map is hosted on GitHub Pages; the application itself runs locally |
 
-| Welcome | An edited statement is caught | The landlord's view |
-| --- | --- | --- |
-| ![Welcome screen](docs/screenshots/1-welcome.png) | ![Edited statement caught](docs/screenshots/3-edited-caught.png) | ![Landlord verification](docs/screenshots/6-landlord-verify.png) |
+| An edited statement is caught | A passport is issued |
+| --- | --- |
+| ![Edited statement caught](docs/screenshots/3-edited-caught.png) | ![Passport ready](docs/screenshots/5-passport-ready.png) |
+
+| The landlord's view | Welcome |
+| --- | --- |
+| ![Landlord verification](docs/screenshots/6-landlord-verify.png) | ![Welcome screen](docs/screenshots/1-welcome.png) |
 
 The report is one page for the included fixture. Arbitrary uploaded text is not guaranteed to fit one page. Its footer always describes the project as a prototype built on fictional sample data.
 
@@ -222,7 +230,7 @@ python -m pytest -q
 
 The sixteen pytest tests cover the genuine fixture summary, edited balances, report contents and export refusal, model-shaped text parsing, selected malformed inputs, CLI verdicts, missed rent, registry lookup, an Indian CSV layout, the simulated bank feed and account record listing. Registry tests use temporary files. The suite needs no API key; the PDF transcription test constructs model-shaped text from the CSV rather than calling Anthropic.
 
-Local verification on 13 October 2026 passed all sixteen tests with Python 3.13.5. Separate CLI checks confirmed exit codes `0`, `1` and `2` for the genuine fixture, edited fixture and a missing file respectively; only the genuine fixture produced a new PDF. These checks do not establish real-bank PDF accuracy, live provider availability, browser behaviour, email delivery, phone access or deployment readiness.
+Local verification on 13 October 2026 passed all sixteen tests with Python 3.13.5. Separate CLI checks confirmed exit codes `0`, `1` and `2` for the genuine fixture, edited fixture and a missing file respectively; only the genuine fixture produced a new PDF. A separate browser walkthrough of 58 checks passed the same day; see [docs/DEMO.md](docs/DEMO.md). These checks do not establish real-bank PDF accuracy, live provider availability, email delivery, phone access or deployment readiness.
 
 [GitHub Actions](.github/workflows/tests.yml) is configured to run the suite on pushes and pull requests using Python 3.13. The run for the latest commit on 13 October 2026 passed.
 
