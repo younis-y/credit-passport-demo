@@ -78,6 +78,25 @@ def _column(raw, field, required=True):
     return None
 
 
+def _dates(values):
+    """Parse date-only values before putting them into a bounded pandas series."""
+    parsed = []
+    for value in values:
+        text = str(value).strip()
+        if not text:
+            raise StatementError("Every transaction needs a readable date.")
+        try:
+            day = pd.to_datetime(text, format="%Y-%m-%d") if re.fullmatch(r"\d{4}-\d{2}-\d{2}", text) else pd.to_datetime(text, dayfirst=True)
+            if pd.isna(day) or day.tzinfo is not None or day != day.normalize():
+                raise ValueError("not a date-only value")
+            if not (1678 <= day.year <= 2261):
+                raise ValueError("outside supported date range")
+            parsed.append(day)
+        except (ValueError, TypeError, OverflowError, AssertionError) as error:
+            raise StatementError("Use calendar dates such as YYYY-MM-DD or DD/MM/YYYY, without a time or timezone, between 1678 and 2261.") from error
+    return pd.Series(parsed, index=values.index, dtype="datetime64[ns]")
+
+
 def parse_csv(file):
     if isinstance(file, (str, os.PathLike)):
         with open(file, "rb") as source:
@@ -107,12 +126,7 @@ def parse_csv(file):
         if (deposits < 0).any() or (withdrawals < 0).any() or ((deposits > 0) & (withdrawals > 0)).any():
             raise StatementError("Use non-negative deposits and withdrawals, with only one non-zero value per row.")
         amount = deposits - withdrawals
-    dates = _column(raw, "date").str.strip()
-    iso = dates.str.fullmatch(r"\d{4}-\d{2}-\d{2}")
-    # dayfirst=True can misread ISO dates; parse that unambiguous form separately.
-    parsed_dates = pd.Series(pd.NaT, index=dates.index, dtype="datetime64[ns]")
-    parsed_dates.loc[iso] = pd.to_datetime(dates.loc[iso], format="%Y-%m-%d")
-    parsed_dates.loc[~iso] = pd.to_datetime(dates.loc[~iso], dayfirst=True, format="mixed")
+    parsed_dates = _dates(_column(raw, "date"))
     table = pd.DataFrame(
         {
             "date": parsed_dates,

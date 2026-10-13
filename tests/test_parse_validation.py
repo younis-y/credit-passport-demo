@@ -135,3 +135,37 @@ def test_iso_dates_can_coexist_with_day_first_bank_dates():
     ]))
     assert [date.date().isoformat() for date in result.transactions["date"]] == ["2026-04-01", "2026-04-02"]
     assert result.passport["verified"] is True
+
+
+@pytest.mark.parametrize("dates", [
+    ("2026-04-01T12:00:00Z", "2026-04-02T12:00:00Z"),
+    ("2263-01-01", "2263-01-02"),
+], ids=["timezone-aware-timestamps", "out-of-bounds-calendar-dates"])
+def test_unsupported_dates_raise_a_safe_input_error(dates):
+    data = csv_bytes(rows=[
+        [dates[0], "OPENING BALANCE", "0", "100"],
+        [dates[1], "TEST CREDIT", "25", "125"],
+    ])
+    with pytest.raises(StatementError):
+        run("test.csv", data)
+
+
+@pytest.mark.parametrize("dates", [
+    ("2026-04-01T12:00:00Z", "2026-04-02T12:00:00Z"),
+    ("2263-01-01", "2263-01-02"),
+], ids=["timezone-aware-timestamps", "out-of-bounds-calendar-dates"])
+@pytest.mark.parametrize("endpoint", ["/api/analyse", "/api/report"])
+def test_unsupported_dates_return_http_400_instead_of_crashing(dates, endpoint):
+    from server import app
+
+    data = csv_bytes(rows=[
+        [dates[0], "OPENING BALANCE", "0", "100"],
+        [dates[1], "TEST CREDIT", "25", "125"],
+    ])
+    with app.test_client() as client:
+        response = client.post(endpoint, data={
+            "statement": (io.BytesIO(data), "test.csv"), "currency": "GBP",
+        })
+    assert response.status_code == 400
+    assert response.is_json
+    assert response.json["error"]
