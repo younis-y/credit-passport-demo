@@ -31,4 +31,15 @@ Run `python scripts/generate_demo_data.py` to regenerate the bundled CSVs, manif
 
 ## Verification record
 
-Deployment URL and observed live checks are recorded here after a successful deployment. A prepared local build alone is not a deployment.
+Verified on 13 October 2026:
+
+- Public production URL: https://credit-passport-demo.vercel.app
+- Dashboard: https://vercel.com/mythicmindlabs/credit-passport-demo
+- Vercel deployment: `dpl_2JLepNJ7EmZyBkZ26WUU6ZGCpUUk`; dashboard status Ready.
+- Deployed application source: Git commit `0a65c2435ded73e6cc84df01614ac4c74bc26ba1`, uploaded through Vercel Drop. This documentation record was added afterwards.
+- Local suite: 90 tests passed. GitHub CI passed on the deployed application commit.
+- Public HTTP acceptance: 17 requests, 92 assertions passed across all seven scenarios, report eligibility/refusal, exact downloadable ZIP, individual CSV download and multipart re-upload.
+- Browser verification: production page, passing metrics, inconsistent-statement failure, report download and no captured browser warnings/errors.
+- Four eligible PDFs were verified as one page, visibly synthetic, and containing expected advisory notes. Edited/out-of-order scenarios returned HTTP 422 for reports, malformed input returned HTTP 400.
+
+The deployment does not have a Git connection. Future GitHub pushes will not automatically redeploy it. The direct upload used the selected account's existing ACME workspace (`mythicmindlabs`); its private-repository Git import could not access this repository. The deployment remains manageable from that dashboard without broadening GitHub permissions.
