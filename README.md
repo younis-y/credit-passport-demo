@@ -160,7 +160,7 @@ date,description,amount,balance
 01/04/2026,Rent,-2400.00,6050.00
 ```
 
-Credits are positive and debits negative. The parser reads mixed date formats day-first and reverses all rows when the first date is later than the last; it does not otherwise sort the statement. At least two rows are required. Recurring income or rent detection needs matching payments in at least three separate months. Invalid or blank CSV numeric cells are currently converted to zero, so inspect source data carefully; the balance check does not catch every parsing error.
+Credits are positive and debits negative. The parser reads mixed date formats day-first and reverses all rows when the first date is later than the last; it does not otherwise sort the statement. At least two rows are required. Recurring income or rent detection needs matching payments in at least three separate months. A blank or malformed amount or balance, an unreadable date or a row with the wrong number of cells is rejected with a message rather than guessed at; blank cells are allowed only in separate deposit and withdrawal columns.
 
 ## Configuration
 
@@ -202,7 +202,7 @@ The report is one page for the included fixture. Arbitrary uploaded text is not 
 
 ## API / CLI Reference
 
-There is no HTTP API. The public entry point within the Python package is:
+The Streamlit application has no HTTP API; the Flask demo's routes are in [server.py](server.py). The public entry point within the Python package is:
 
 ```python
 from pathlib import Path
@@ -239,9 +239,9 @@ See [docs/DEMO.md](docs/DEMO.md) for a step-by-step demonstration script, expect
 python -m pytest -q
 ```
 
-The sixteen pytest tests cover the genuine fixture summary, edited balances, report contents and export refusal, model-shaped text parsing, selected malformed inputs, CLI verdicts, missed rent, registry lookup, an Indian CSV layout, the simulated bank feed and account record listing. Registry tests use temporary files. The suite needs no API key; the PDF transcription test constructs model-shaped text from the CSV rather than calling Anthropic.
+The pytest suite covers the genuine fixture summary, edited balances, report contents and export refusal, model-shaped text parsing, selected malformed inputs, CLI verdicts, missed rent, registry lookup, an Indian CSV layout, the simulated bank feed and account record listing, plus CSV input validation, the generated synthetic scenarios and the Flask demo's routes. Registry tests use temporary files. The suite needs no API key; the PDF transcription test constructs model-shaped text from the CSV rather than calling Anthropic.
 
-Local verification on 13 October 2026 passed all sixteen tests with Python 3.13.5. Separate CLI checks confirmed exit codes `0`, `1` and `2` for the genuine fixture, edited fixture and a missing file respectively; only the genuine fixture produced a new PDF. A separate browser walkthrough of 58 checks passed the same day; see [docs/DEMO.md](docs/DEMO.md). These checks do not establish real-bank PDF accuracy, live provider availability, email delivery, phone access or deployment readiness.
+Local verification on 13 October 2026 passed the sixteen tests that existed then with Python 3.13.5; after the Flask demo was added the suite stood at 95 tests, all passing on 13 October 2026. Separate CLI checks confirmed exit codes `0`, `1` and `2` for the genuine fixture, edited fixture and a missing file respectively; only the genuine fixture produced a new PDF. A separate browser walkthrough of 58 checks passed the same day; see [docs/DEMO.md](docs/DEMO.md). These checks do not establish real-bank PDF accuracy, live provider availability, email delivery, phone access or deployment readiness.
 
 [GitHub Actions](.github/workflows/tests.yml) is configured to run the suite on pushes and pull requests using Python 3.13. The run for the latest commit on 13 October 2026 passed.
 
@@ -249,7 +249,7 @@ Local verification on 13 October 2026 passed all sixteen tests with Python 3.13.
 
 These are proposed improvements, not scheduled commitments:
 
-- Reject malformed numeric cells, validate currency codes and add explicit currency selection to the CLI.
+- Validate currency codes and add explicit currency selection to the CLI.
 - Replace fixed demonstration exchange rates with a validated rate or omit the conversion.
 - Replace simulated sign-in with verified authentication and define lookup and record-ownership permissions.
 - Define upload, cache and registry retention, deletion and safe diagnostics; make registry writes safe for concurrent use.
