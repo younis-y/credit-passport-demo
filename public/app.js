@@ -107,6 +107,7 @@ function renderResult(data) {
   byId("result-meta").textContent = `${data.source} · ${data.filename} · ${data.row_count} rows · ${formatDate(data.period[0])} – ${formatDate(data.period[1])}`;
   renderMetrics(data);
   byId("report-bar").hidden = !data.balanced;
+  if (byId("deposit-bar")) byId("deposit-bar").hidden = !data.balanced;
   const findings = byId("findings");
   findings.replaceChildren();
   data.findings.forEach((finding) => {
@@ -205,4 +206,36 @@ byId("download-report").addEventListener("click", async () => {
   }
 });
 
+byId("paypal-import")?.addEventListener("click", () => analyse({scenario_id: "paypal"}));
+
+byId("deposit-form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (busy) return;
+  byId("error").hidden = true;
+  setBusy(true, "Opening PayPal Checkout…");
+  try {
+    const response = await fetch("/api/paypal/deposit", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({amount: byId("deposit-amount").value})});
+    if (!response.ok) throw new Error(await responseError(response));
+    window.location.assign((await response.json()).approve_url);
+  } catch (error) {
+    showError(error.message, "The deposit could not be started");
+    setBusy(false);
+  }
+});
+
+function showDepositOutcome() {
+  const params = new URLSearchParams(window.location.search);
+  const outcome = params.get("deposit");
+  if (!outcome) return;
+  const messages = {
+    paid: `Deposit paid: ${params.get("amount")} · PayPal reference ${params.get("ref")}`,
+    cancelled: "The PayPal payment was cancelled. Nothing was charged.",
+    failed: "PayPal did not complete the payment. Nothing was charged.",
+  };
+  byId("deposit-notice").textContent = messages[outcome] || messages.failed;
+  byId("deposit-notice").hidden = false;
+  window.history.replaceState(null, "", "/");
+}
+
+showDepositOutcome();
 loadScenarios();

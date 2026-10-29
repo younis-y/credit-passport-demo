@@ -8,11 +8,16 @@ from __future__ import annotations
 import csv
 import io
 import json
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
+from urllib.parse import urlencode
 
-from flask import Flask, jsonify, render_template, request, send_file
+from flask import Flask, jsonify, redirect, render_template, request, send_file
 from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
+
+from passport import paypal
 
 from passport.parse import StatementError
 from passport.pipeline import run
@@ -23,6 +28,7 @@ DEMO_DIR = ROOT / "synthetic_demo"
 MAX_CSV_BYTES = 2 * 1024 * 1024
 MAX_ROWS = 5000
 MAX_EVIDENCE_ROWS = 100
+PAYPAL_SOURCE = {"id": "paypal", "source": "PayPal sandbox account · rows fetched from PayPal", "report_source": "PayPal sandbox transaction history"}
 CURRENCIES = {
     "GBP": "GBP — British pound",
     "SGD": "SGD — Singapore dollar",
@@ -93,6 +99,11 @@ def read_input():
             raise StatementError("Choose one of the available sample scenarios.")
     else:
         scenario_id = request.form.get("scenario_id")
+    if scenario_id == "paypal":
+        if not paypal.configured():
+            raise StatementError("PayPal is not connected on this deployment.")
+        data, currency = paypal.statement_csv()
+        return "paypal-sandbox.csv", data, currency, PAYPAL_SOURCE
     if scenario_id:
         selected = next((item for item in scenarios() if item["id"] == scenario_id), None)
         if not selected:
@@ -139,6 +150,7 @@ def serialise_finding(finding):
 
 def create_app():
     app = Flask(__name__, static_folder="public", static_url_path="")
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)  # PayPal return URLs need the public https host
     app.config.update(
         MAX_CONTENT_LENGTH=MAX_CSV_BYTES + 128 * 1024,
         MAX_FORM_MEMORY_SIZE=64 * 1024,
@@ -161,13 +173,17 @@ def create_app():
     def input_error(error):
         return jsonify(error=str(error)[:600]), 400
 
+    @app.errorhandler(paypal.PayPalError)
+    def paypal_error(error):
+        return jsonify(error=str(error)[:600]), 502
+
     @app.errorhandler(RequestEntityTooLarge)
     def too_large(_error):
         return jsonify(error="The request is too large. Use one CSV file smaller than 2 MB."), 413
 
     @app.get("/")
     def index():
-        return render_template("index.html", currencies=CURRENCIES)
+        return render_template("index.html", currencies=CURRENCIES, paypal=paypal.configured())
 
     @app.get("/api/scenarios")
     def list_scenarios():
@@ -195,7 +211,7 @@ def create_app():
         findings = passport["findings"] if balanced else passport["findings"][:1]
         return jsonify(
             filename=name,
-            source="Bundled synthetic sample" if selected else "Uploaded CSV · source unverified",
+            source=selected.get("source", "Bundled synthetic sample") if selected else "Uploaded CSV · source unverified",
             scenario_id=selected["id"] if selected else None,
             currency=result.currency,
             row_count=len(result.transactions),
@@ -217,10 +233,38 @@ def create_app():
             return jsonify(error="A report cannot be issued because the balance or date-order check failed."), 422
         pdf = build_pdf(
             result.passport, result.currency, None, "", source=(
-                "Synthetic CSV demo" if selected else "Uploaded CSV; source unverified"
+                selected.get("report_source", "Synthetic CSV demo") if selected else "Uploaded CSV; source unverified"
             ), demo=True,
         )
         return send_file(io.BytesIO(pdf), mimetype="application/pdf", as_attachment=True, download_name="credit-passport-demo.pdf")
+
+    @app.post("/api/paypal/deposit")
+    def paypal_deposit():
+        if not paypal.configured():
+            return jsonify(error="PayPal is not connected on this deployment."), 404
+        payload = request.get_json(silent=True) or {}
+        try:
+            amount = Decimal(str(payload.get("amount", ""))).quantize(Decimal("0.01"))
+        except InvalidOperation:
+            amount = Decimal(0)
+        if not Decimal("1") <= amount <= Decimal("5000"):
+            raise StatementError("Enter a deposit between GBP 1 and GBP 5,000.")
+        url = paypal.create_order(str(amount), "GBP", request.url_root + "paypal/return", request.url_root + "paypal/cancel")
+        return jsonify(approve_url=url)
+
+    @app.get("/paypal/return")
+    def paypal_return():
+        try:
+            status, capture_id, amount = paypal.capture_order(request.args.get("token", ""))
+        except paypal.PayPalError:
+            return redirect("/?deposit=failed")
+        if status != "COMPLETED":
+            return redirect("/?deposit=failed")
+        return redirect("/?" + urlencode({"deposit": "paid", "ref": capture_id, "amount": amount}))
+
+    @app.get("/paypal/cancel")
+    def paypal_cancel():
+        return redirect("/?deposit=cancelled")
 
     return app
 
