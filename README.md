@@ -4,6 +4,8 @@ Turn a bank statement into a summary of recurring income, rent payments and obse
 
 ![Credit Passport welcome screen](docs/screenshots/1-welcome.png)
 
+**Live demo:** https://credit-passport-paypal.vercel.app (synthetic data and PayPal sandbox only).
+
 Built in one evening at a fintech hackathon in London on 13 October 2026, hosted by Singapore Global Network and LSE Generate.
 
 ## Description
@@ -27,6 +29,7 @@ Credit Passport is a Python prototype for people moving to the UK who want to sh
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
+- [Team](#team)
 - [Contact / Support](#contact--support)
 
 ## Features
@@ -265,7 +268,11 @@ Add regression tests for parsing or rule changes. Use fictional statements in te
 
 ## License
 
-The project licence is not specified, and this checkout contains no `LICENSE` file. The maintainer needs to select a licence and add its terms before this section can state reuse permissions. The licences of dependencies do not establish the licence of this project.
+[MIT](LICENSE).
+
+## Team
+
+Built by Younis Younis and Dave Cheng, with the Flask/Vercel demo and CSV validation contributed by [MasteraSnackin](https://github.com/MasteraSnackin).
 
 ## Contact / Support
 
