@@ -95,6 +95,36 @@ function renderEvidence(finding, currency) {
   return details;
 }
 
+function renderAi(data) {
+  const panel = byId("ai-reading");
+  panel.hidden = !data.ai;
+  byId("ai-rows").replaceChildren();
+  if (!data.ai) return;
+  byId("ai-note").textContent = data.ai.note || data.ai.error;
+  if (data.ai.error) { byId("ai-meta").textContent = ""; return; }
+  const counts = {};
+  data.ai.rows.forEach((row) => { counts[row.label] = (counts[row.label] || 0) + 1; });
+  byId("ai-meta").textContent = `${Object.entries(counts).map(([label, count]) => `${count} ${label}`).join(" · ")} · written by ${data.ai.model}. Advisory only: the fixed checks below decide the result.`;
+  const details = node("details", "evidence");
+  details.append(node("summary", "", `Show Claude's label for each of ${data.ai.rows.length}${data.ai.total > data.ai.rows.length ? ` of ${data.ai.total}` : ""} rows`));
+  const wrap = node("div", "table-wrap");
+  const table = node("table");
+  const head = node("tr");
+  ["Row", "Date", "Description", `Amount (${data.currency})`, "Claude's label"].forEach((title, index) => { const th = node("th", index === 3 ? "numeric" : "", title); th.scope = "col"; head.append(th); });
+  const thead = node("thead");
+  thead.append(head);
+  const tbody = node("tbody");
+  data.ai.rows.forEach((record) => {
+    const row = node("tr");
+    row.append(node("td", "", record.row), node("td", "", record.date), node("td", "description", record.description), node("td", "numeric", formatNumber(record.amount)), node("td", "", record.label));
+    tbody.append(row);
+  });
+  table.append(thead, tbody);
+  wrap.append(table);
+  details.append(wrap);
+  byId("ai-rows").append(details);
+}
+
 function renderResult(data) {
   const hasNotes = data.findings.some((finding) => !finding.ok);
   byId("result-title").textContent = data.balanced ? "Your statement summary" : "The checks found a problem";
@@ -106,6 +136,7 @@ function renderResult(data) {
     : "The running balances or date order did not pass. No income summary or PDF is issued from this statement. Inspect the finding below.";
   byId("result-meta").textContent = `${data.source} · ${data.filename} · ${data.row_count} rows · ${formatDate(data.period[0])} – ${formatDate(data.period[1])}`;
   renderMetrics(data);
+  renderAi(data);
   byId("report-bar").hidden = !data.balanced;
   if (byId("deposit-bar")) byId("deposit-bar").hidden = !data.balanced;
   const findings = byId("findings");

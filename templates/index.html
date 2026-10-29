@@ -48,6 +48,7 @@
       <p id="result-summary" class="section-copy"></p>
       <p id="result-meta" class="result-meta"></p>
       <div id="metrics" class="metrics"></div>
+      <section id="ai-reading" class="upload-panel" aria-labelledby="ai-title" hidden><h3 id="ai-title">Claude's reading</h3><p id="ai-note"></p><p id="ai-meta" class="field-note"></p><div id="ai-rows"></div></section>
       <div id="report-bar" class="report-bar" hidden><div><h3>A summary to keep</h3><p>Download a demo PDF with the findings. The transaction rows stay out of the report.</p></div><button id="download-report" class="primary" type="button">Download demo PDF <span aria-hidden="true">↓</span></button></div>
       {% if paypal %}<div id="deposit-bar" class="report-bar" hidden><div><h3>Pay a holding deposit</h3><p>Pay the landlord through PayPal Checkout (sandbox). In England a holding deposit is capped at one week's rent.</p></div><form id="deposit-form" class="field"><label for="deposit-amount">Amount (GBP)</label><input id="deposit-amount" type="number" min="1" max="5000" step="0.01" required><button class="primary" type="submit">Pay with PayPal <span aria-hidden="true">→</span></button></form></div>{% endif %}
       <div class="checks-heading"><h3>What the checks found</h3><span>Expand a finding to inspect its evidence</span></div>

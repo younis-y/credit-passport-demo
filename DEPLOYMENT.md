@@ -9,7 +9,7 @@ npx vercel login
 npx vercel --prod
 ```
 
-Use a new Vercel project for this demo. No database or build command is required. The PayPal features are optional: set `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` (sandbox REST app credentials) to show them; without both, the PayPal panels are hidden. `PAYPAL_API_BASE` defaults to `https://api-m.sandbox.paypal.com`. The Flask function and static assets use the repository root; assets live under `public/`. The existing Streamlit `app.py` is excluded by `.vercelignore`. The function has a 30 second maximum duration.
+Use a new Vercel project for this demo. No database or build command is required. The PayPal features are optional: set `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` (sandbox REST app credentials) to show them; without both, the PayPal panels are hidden. `PAYPAL_API_BASE` defaults to `https://api-m.sandbox.paypal.com`. Set `ANTHROPIC_API_KEY` to add Claude's reading; `PASSPORT_AI_MODEL` defaults to `claude-opus-5-5`. The Flask function and static assets use the repository root; assets live under `public/`. The existing Streamlit `app.py` is excluded by `.vercelignore`. The function has a 30 second maximum duration.
 
 Official runtime reference: https://vercel.com/docs/frameworks/backend/flask
 
@@ -20,6 +20,7 @@ Official runtime reference: https://vercel.com/docs/frameworks/backend/flask
 - Uploaded CSVs are processed in memory per request. The application does not write uploads, reports or issued-record files to disk, maintain a server-side session, or call a bank, email or AI service. Hosting infrastructure still handles request metadata; this is not a general data-retention guarantee.
 - The browser retains the selected file for the current flow so a PDF request can re-submit the original data. The server re-runs the checks rather than trusting client-supplied findings. Reloading clears that client state.
 - With PayPal configured, **Import PayPal history** reads the sandbox account's last six months through the Transaction Search API (31-day windows, balance-affecting records only, amounts net of fees, the account's most-used currency) and runs the same checks. If PayPal returns no running balances, the import is refused rather than balances being invented. The app needs Transaction Search enabled on the PayPal app.
+- With `ANTHROPIC_API_KEY` set, every statement that passes the balance check (sample, upload or PayPal import) is sent to Claude as rows of date, description, amount and balance (first 300 rows). Claude labels each row (income, rent, bills, transfer, deposit, other) and writes a short note for the landlord, using structured JSON output and server-side refusal fallbacks. The reading is advisory and shown beside the fixed checks; it never changes a finding or report eligibility. If Claude is unavailable, the checks still return. Identical statements reuse one call per warm instance.
 - **Pay with PayPal** takes a GBP holding deposit (1 to 5,000) through Checkout Orders v2: the server creates the order, the payer approves it on PayPal, and `/paypal/return` captures it. No payment data is stored.
 - No landlord verification code, persistent account, external share link or simulated bank consent is included in this Flask version.
 - Currency is selected explicitly. There is no live or invented exchange-rate conversion.

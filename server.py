@@ -9,15 +9,17 @@ import csv
 import io
 import json
 from decimal import Decimal, InvalidOperation
+from functools import lru_cache
 from pathlib import Path
 from urllib.parse import urlencode
 
+import anthropic
 from flask import Flask, jsonify, redirect, render_template, request, send_file
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
 
-from passport import paypal
+from passport import ai, paypal
 
 from passport.parse import StatementError
 from passport.pipeline import run
@@ -126,6 +128,26 @@ def read_input():
     return name, data, currency, None
 
 
+@lru_cache(maxsize=32)
+def ai_reading(data, currency):
+    """One Claude call per distinct statement; repeat clicks on a sample reuse it."""
+    result = run("statement.csv", data, currency)
+    return result.transactions, ai.read(result.transactions, result.passport["findings"], result.currency)
+
+
+def ai_block(data, currency):
+    try:
+        tx, reading = ai_reading(data, currency)
+    except (anthropic.APIError, ValueError, KeyError):
+        return {"error": "Claude's reading is unavailable right now. The checks above are unaffected."}
+    rows = [
+        {"row": number, "date": row.date.strftime("%d %b %Y"), "description": str(row.description),
+         "amount": float(row.amount), "label": reading["labels"].get(number, "unlabelled")}
+        for number, row in enumerate(tx.head(ai.MAX_ROWS).itertuples(), start=1)
+    ]
+    return {"model": ai.MODEL, "note": reading["note"], "rows": rows, "total": len(tx)}
+
+
 def serialise_finding(finding):
     evidence = []
     for index, row in finding.evidence.head(MAX_EVIDENCE_ROWS).iterrows():
@@ -223,6 +245,7 @@ def create_app():
                 "ratio": passport["rent_to_income"],
             } if balanced else None,
             findings=[serialise_finding(finding) for finding in findings],
+            ai=ai_block(data, result.currency) if balanced and ai.configured() else None,
         )
 
     @app.post("/api/report")

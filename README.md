@@ -42,6 +42,7 @@ Credit Passport is a Python prototype for people moving to the UK who want to sh
 - Run the same processing pipeline from the browser, command line or Python.
 - Save issued summaries with verification codes for landlord lookup, share links and QR codes.
 - Demonstrate bank consent and saved passports without contacting a bank or sending a sign-in email.
+- Have Claude label every row (income, rent, bills, transfer, deposit, other) and write a short note for the landlord, shown beside the fixed checks it cannot override (Flask demo).
 - Import transaction history from a PayPal sandbox account and take a holding deposit through PayPal Checkout (Flask demo; see [DEPLOYMENT.md](DEPLOYMENT.md)).
 - Read common CSV column aliases and reverse a newest-first statement for balance checking.
 - Rehearse with genuine, edited, missed-rent and Indian-rupee fictional statements.
