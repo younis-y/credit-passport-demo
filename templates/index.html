@@ -27,9 +27,7 @@
         </div>
       </div>
       <div class="actions">
-        {% if login %}<a class="pp" href="/paypal/login">Connect PayPal</a>
-        {% elif paypal %}<button class="pp" type="button" data-source="paypal">Connect PayPal</button>{% endif %}
-        <button class="{{ 'lnk' if paypal else 'go' }}" type="button" data-source="paypal-sample">Try a sample account</button>
+        <button class="go" type="button" data-source="paypal-sample">Try a sample account</button>
       </div>
     </section>
 
