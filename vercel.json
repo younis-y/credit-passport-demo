@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "flask",
-  "functions": {"server.py": {"maxDuration": 30}}
+  "functions": {"server.py": {"maxDuration": 60}}
 }

@@ -1,0 +1,808 @@
+{
+ "transaction_details": [
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-04-30T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "1840.00"
+    },
+    "transaction_event_code": "T0000",
+    "transaction_subject": "Opening balance"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-05-01T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-950.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "890.00"
+    },
+    "transaction_event_code": "T0001",
+    "transaction_subject": "Rent - Flat 4, Mare Street"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-05-02T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "3200.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "-93.10"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "3996.90"
+    },
+    "transaction_event_code": "T0006"
+   },
+   "payer_info": {
+    "payer_name": {
+     "alternate_full_name": "Northwind Studio Ltd"
+    }
+   }
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-05-08T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-68.40"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "3928.50"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Octopus Energy"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-05-12T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-18.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "3910.50"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Three Mobile"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-05-15T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-1200.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "2710.50"
+    },
+    "transaction_event_code": "T0400",
+    "transaction_subject": "Transfer to Monzo"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-05-24T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-11.99"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "2698.51"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Spotify"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-06-01T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-950.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "1748.51"
+    },
+    "transaction_event_code": "T0001",
+    "transaction_subject": "Rent - Flat 4, Mare Street"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-06-02T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "3150.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "-91.65"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "4806.86"
+    },
+    "transaction_event_code": "T0006"
+   },
+   "payer_info": {
+    "payer_name": {
+     "alternate_full_name": "Northwind Studio Ltd"
+    }
+   }
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-06-08T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-68.40"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "4738.46"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Octopus Energy"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-06-12T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-18.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "4720.46"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Three Mobile"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-06-15T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-1200.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "3520.46"
+    },
+    "transaction_event_code": "T0400",
+    "transaction_subject": "Transfer to Monzo"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-06-20T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "480.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "-14.22"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "3986.24"
+    },
+    "transaction_event_code": "T0006"
+   },
+   "payer_info": {
+    "payer_name": {
+     "alternate_full_name": "Atlas Media"
+    }
+   }
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-06-24T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-11.99"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "3974.25"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Spotify"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-07-01T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-950.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "3024.25"
+    },
+    "transaction_event_code": "T0001",
+    "transaction_subject": "Rent - Flat 4, Mare Street"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-07-02T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "3250.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "-94.55"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "6179.70"
+    },
+    "transaction_event_code": "T0006"
+   },
+   "payer_info": {
+    "payer_name": {
+     "alternate_full_name": "Northwind Studio Ltd"
+    }
+   }
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-07-08T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-68.40"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "6111.30"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Octopus Energy"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-07-12T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-18.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "6093.30"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Three Mobile"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-07-15T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-1200.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "4893.30"
+    },
+    "transaction_event_code": "T0400",
+    "transaction_subject": "Transfer to Monzo"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-07-24T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-11.99"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "4881.31"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Spotify"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-08-01T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-950.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "3931.31"
+    },
+    "transaction_event_code": "T0001",
+    "transaction_subject": "Rent - Flat 4, Mare Street"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-08-02T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "3200.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "-93.10"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "7038.21"
+    },
+    "transaction_event_code": "T0006"
+   },
+   "payer_info": {
+    "payer_name": {
+     "alternate_full_name": "Northwind Studio Ltd"
+    }
+   }
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-08-08T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-68.40"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "6969.81"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Octopus Energy"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-08-12T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-18.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "6951.81"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Three Mobile"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-08-15T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-1200.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "5751.81"
+    },
+    "transaction_event_code": "T0400",
+    "transaction_subject": "Transfer to Monzo"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-08-24T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-11.99"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "5739.82"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Spotify"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-09-01T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-950.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "4789.82"
+    },
+    "transaction_event_code": "T0001",
+    "transaction_subject": "Rent - Flat 4, Mare Street"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-09-02T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "3180.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "-92.52"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "7877.30"
+    },
+    "transaction_event_code": "T0006"
+   },
+   "payer_info": {
+    "payer_name": {
+     "alternate_full_name": "Northwind Studio Ltd"
+    }
+   }
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-09-08T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-68.40"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "7808.90"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Octopus Energy"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-09-12T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-18.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "7790.90"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Three Mobile"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-09-15T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-1200.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "6590.90"
+    },
+    "transaction_event_code": "T0400",
+    "transaction_subject": "Transfer to Monzo"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-09-20T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "480.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "-14.22"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "7056.68"
+    },
+    "transaction_event_code": "T0006"
+   },
+   "payer_info": {
+    "payer_name": {
+     "alternate_full_name": "Atlas Media"
+    }
+   }
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-09-24T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-11.99"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "7044.69"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Spotify"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-10-01T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-950.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "6094.69"
+    },
+    "transaction_event_code": "T0001",
+    "transaction_subject": "Rent - Flat 4, Mare Street"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-10-02T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "3220.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "-93.68"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "9221.01"
+    },
+    "transaction_event_code": "T0006"
+   },
+   "payer_info": {
+    "payer_name": {
+     "alternate_full_name": "Northwind Studio Ltd"
+    }
+   }
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-10-08T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-68.40"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "9152.61"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Octopus Energy"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-10-12T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-18.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "9134.61"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Three Mobile"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-10-15T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-1200.00"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "7934.61"
+    },
+    "transaction_event_code": "T0400",
+    "transaction_subject": "Transfer to Monzo"
+   },
+   "payer_info": {}
+  },
+  {
+   "transaction_info": {
+    "transaction_initiation_date": "2026-10-24T09:00:00+0000",
+    "transaction_amount": {
+     "currency_code": "GBP",
+     "value": "-11.99"
+    },
+    "fee_amount": {
+     "currency_code": "GBP",
+     "value": "0.00"
+    },
+    "ending_balance": {
+     "currency_code": "GBP",
+     "value": "7922.62"
+    },
+    "transaction_event_code": "T0003",
+    "transaction_subject": "Spotify"
+   },
+   "payer_info": {}
+  }
+ ]
+}

@@ -1,5 +1,6 @@
-"""PayPal statement mapping and deposit routes, with PayPal's HTTP calls replaced by fixtures."""
+"""PayPal statement mapping, deposit hold, landlord link and login, with PayPal's HTTP calls replaced by fixtures."""
 from datetime import datetime, timezone
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -50,8 +51,14 @@ def fake_paypal(monkeypatch):
             return {"transaction_details": rows, "total_pages": 1}
         if path == "/v2/checkout/orders":
             return {"id": "5O190127TN364715T", "links": [{"rel": "payer-action", "href": "https://www.sandbox.paypal.com/checkoutnow?token=5O190127TN364715T"}]}
+        if path.endswith("/authorize"):
+            return {"purchase_units": [{"payments": {"authorizations": [{"id": "8AB12345CD678901E", "status": "CREATED", "amount": {"currency_code": "GBP", "value": "242.30"}}]}}]}
         if path.endswith("/capture"):
-            return {"status": "COMPLETED", "purchase_units": [{"payments": {"captures": [{"id": "3C679366HH908993F", "amount": {"currency_code": "GBP", "value": "250.00"}}]}}]}
+            return {"id": "7KP11111AA2222222", "status": "COMPLETED"}
+        if path.endswith("/void"):
+            return {}
+        if path.startswith("/v1/identity/openidconnect/userinfo"):
+            return {"name": "Amira Haddad", "email": "amira@example.com", "verified_account": "true"}
         raise AssertionError(path)
 
     monkeypatch.setattr(paypal, "_request", request)
@@ -110,32 +117,58 @@ def test_paypal_history_runs_through_the_same_checks(fake_paypal, client, monkey
     assert report.status_code == 200 and report.data.startswith(b"%PDF")
 
 
+def test_sample_history_is_mapped_by_the_same_code_and_passes(client):
+    data = client.post("/api/analyse", json={"scenario_id": "paypal-sample"}).json
+    assert data["balanced"] is True and data["currency"] == "GBP"
+    assert data["applicant"] == "Amira Haddad"
+    assert data["source"].startswith("Sample PayPal history")
+    assert data["metrics"]["rent_record"] == "6/6"
+    assert data["rows"][2] == {"row": 3, "date": "02 May", "description": "Northwind Studio Ltd", "amount": 3106.9}
+
+
 def test_paypal_is_hidden_and_refused_when_not_configured(client, monkeypatch):
     monkeypatch.delenv("PAYPAL_CLIENT_ID", raising=False)
-    assert b"paypal-import" not in client.get("/").data
+    assert b'data-scenario="paypal"' not in client.get("/").data
     assert client.post("/api/analyse", json={"scenario_id": "paypal"}).status_code == 400
-    assert client.post("/api/paypal/deposit", json={"amount": "250"}).status_code == 404
+    assert client.post("/api/agent", json={"scenario_id": "paypal-sample", "rent": "1050"}).status_code == 404
+    assert client.get("/paypal/login").status_code == 404
 
 
-def test_deposit_creates_order_and_capture_redirects_with_reference(fake_paypal, client):
-    assert b"paypal-import" in client.get("/").data
-    response = client.post("/api/paypal/deposit", json={"amount": "250"}, base_url="https://cp.example")
-    assert response.status_code == 200
-    assert response.json["approve_url"].startswith("https://www.sandbox.paypal.com/checkoutnow")
-    order = next(body for _, path, body in fake_paypal if path == "/v2/checkout/orders")
-    assert order["purchase_units"][0]["amount"] == {"currency_code": "GBP", "value": "250.00"}
-    assert order["payment_source"]["paypal"]["experience_context"]["return_url"] == "https://cp.example/paypal/return"
+def test_return_places_a_hold_and_signs_a_landlord_link(fake_paypal, client):
+    with client.session_transaction() as session:
+        session["offer"] = {"name": "Amira Haddad", "verified": False, "history": "Sample", "income": 3107,
+                            "rent": "1050.00", "share": 34, "record": "6/6", "series": "RI-1"}
     done = client.get("/paypal/return?token=5O190127TN364715T")
     assert done.status_code == 302
-    assert done.location == "/?deposit=paid&ref=3C679366HH908993F&amount=GBP+250.00"
+    query = parse_qs(urlparse(done.location).query)
+    assert query["deposit"] == ["held"] and query["amount"] == ["GBP 242.30"]
+    page = client.get(f"/l/{query['landlord'][0]}")
+    assert page.status_code == 200
+    assert b"Amira Haddad" in page.data and "£242.30".encode() in page.data and "£1,050 rent".encode() in page.data and b"6/6" in page.data
+    assert client.get(f"/l/{query['landlord'][0]}x").status_code == 404
+    accept = client.post(f"/api/l/{query['landlord'][0]}/accept")
+    assert accept.json == {"status": "captured", "reference": "7KP11111AA2222222"}
+    refund = client.post(f"/api/l/{query['landlord'][0]}/refund")
+    assert refund.json["status"] == "voided"
+    paths = [path for _, path, _ in fake_paypal]
+    assert "/v2/payments/authorizations/8AB12345CD678901E/capture" in paths
+    assert "/v2/payments/authorizations/8AB12345CD678901E/void" in paths
 
 
-@pytest.mark.parametrize("amount", ["0", "5000.01", "abc", None])
-def test_deposit_amount_is_bounded(fake_paypal, client, amount):
-    assert client.post("/api/paypal/deposit", json={"amount": amount}).status_code == 400
-
-
-def test_bad_order_reference_and_cancel_do_not_charge(fake_paypal, client):
+def test_bad_order_reference_and_cancel_hold_nothing(fake_paypal, client):
     assert client.get("/paypal/return?token=../../x").location == "/?deposit=failed"
     assert client.get("/paypal/cancel").location == "/?deposit=cancelled"
-    assert not any(path.endswith("/capture") for _, path, _ in fake_paypal)
+    assert not any(path.endswith("/authorize") for _, path, _ in fake_paypal)
+
+
+def test_login_checks_state_and_keeps_the_verified_profile(fake_paypal, client, monkeypatch):
+    monkeypatch.setenv("PAYPAL_LOGIN", "1")
+    start = client.get("/paypal/login")
+    state = parse_qs(urlparse(start.location).query)["state"][0]
+    assert start.location.startswith("https://www.sandbox.paypal.com/signin/authorize?")
+    assert client.get("/paypal/login/return?code=abc&state=wrong").location == "/?login=failed"
+    client.get("/paypal/login")
+    with client.session_transaction() as session:
+        state = session["login_state"]
+    assert client.get(f"/paypal/login/return?code=abc&state={state}").location == "/"
+    assert b"PayPal verified" in client.get("/").data

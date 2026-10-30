@@ -3,61 +3,90 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Explore an evidence-backed bank statement summary using synthetic CSV samples. No API key required.">
-  <title>Credit Passport — Synthetic demo</title>
+  <meta name="description" content="Verified income from PayPal history, for renters new to the UK.">
+  <title>Credit Passport</title>
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
   <header class="site-header">
     <a href="/" class="brand" aria-label="Credit Passport home"><span class="brand-mark" aria-hidden="true">CP</span>Credit Passport</a>
-    <span class="demo-pill">Synthetic demo</span>
+    <div class="header-right">
+      {% if payer %}<span class="who">{{ payer.name }}{% if payer.verified %} <b class="ok">✓ PayPal verified</b>{% endif %}</span>
+      {% elif login %}<a class="login" href="/paypal/login">Log in with PayPal</a>
+      {% else %}<span class="demo-pill">PayPal sandbox</span>{% endif %}
+    </div>
   </header>
   <main>
-    <section class="hero" aria-labelledby="intro-title">
-      <p class="eyebrow">A clearer view of statement data</p>
-      <h1 id="intro-title">A statement.<br>A summary you can inspect.</h1>
-      <p class="intro">Check how income, rent and running balances become an evidence-backed summary. Start with fictional data, then explore the rows behind each finding.</p>
-      <div class="principles"><span>Fixed rules</span><span>Visible evidence</span><span>No API key</span></div>
+    <section class="hero">
+      <h1>Verified income,<br>straight from PayPal.</h1>
+      <p class="intro">For renters new to the UK, with no credit file.</p>
     </section>
 
-    <section class="workspace" aria-labelledby="start-title">
-      <div class="section-heading"><div><p class="eyebrow">01 / Choose your data</p><h2 id="start-title">Try a sample statement</h2></div><a href="/samples/download.zip" class="text-link">Download test pack <span aria-hidden="true">↗</span></a></div>
-      <p class="section-copy">Each scenario is generated data with a known outcome. Select one to run the checks.</p>
-      <div id="scenarios" class="scenario-grid" aria-label="Synthetic test scenarios"><p class="muted">Loading sample scenarios…</p></div>
-      <div class="upload-panel">
-        <div><h3>Or upload a synthetic CSV</h3><p>Use fictional data only. Your file is sent to the server for processing; this demo does not save it.</p></div>
-        <form id="upload-form">
-          <div class="upload-fields"><div class="field"><label for="statement">CSV file</label><input type="file" id="statement" name="statement" accept=".csv,text/csv" required><span class="field-note">UTF-8 CSV · up to 2 MB · 5,000 rows</span></div>
-          <div class="field"><label for="currency">Statement currency</label><select id="currency" name="currency" required><option value="">Select currency</option>{% for code, label in currencies.items() %}<option value="{{ code }}">{{ label }}</option>{% endfor %}</select><span class="field-note">Amounts do not identify their currency.</span></div></div>
-          <div class="upload-footer"><details class="format-help"><summary>CSV format</summary><p>Use <code>date,description,amount,balance</code>. Dates: <code>YYYY-MM-DD</code>. Money in is positive; money out is negative. Include the opening balance as a row with an amount of zero. Common debit/credit column names are also supported.</p></details><button type="submit" class="primary">Check CSV <span aria-hidden="true">→</span></button></div>
+    <div id="notice" class="notice" role="status" hidden></div>
+    <section id="handoff" class="s wide" hidden aria-labelledby="handoff-title">
+      <p class="cap">5 · LANDLORD'S LINK</p>
+      <div class="handoff"><div><h2 id="handoff-title">Deposit held</h2><p class="big" id="handoff-amount"></p></div>
+      <div class="handoff-actions"><a id="landlord-link" class="go" href="#">Open landlord view ↗</a><button id="copy-link" class="ghost" type="button">Copy link</button></div></div>
+    </section>
+
+    <div class="story">
+      <section class="s" aria-labelledby="t1">
+        <p class="cap">1 · TAMPER TEST</p><h2 id="t1">Can it be faked?</h2>
+        <div class="two">
+          <button class="pane" type="button" data-scenario="edited-balances"><span class="ic">?</span><b>Edited file</b><span class="pane-note">Tap to check</span></button>
+          <button class="pane" type="button" data-scenario="paypal-sample"><span class="ic">?</span><b>PayPal</b><span class="pane-note">Tap to check</span></button>
+        </div>
+      </section>
+
+      <section class="s" id="statement" aria-labelledby="t2">
+        <p class="cap">2 · FROM PAYPAL</p>
+        <div class="row-between"><h2 id="t2">Statement</h2>
+          <div class="chips">
+            <button class="chip" type="button" data-scenario="paypal-sample">Sample</button>
+            {% if paypal %}<button class="chip" type="button" data-scenario="paypal">My PayPal</button>{% endif %}
+          </div></div>
+        <p id="source" class="source">Pick a source</p>
+        <div id="kpis" class="kpis" hidden></div>
+        <div class="rows"><table><tbody id="rows"></tbody></table></div>
+        <details id="checks" class="checks" hidden><summary>Checks</summary><ul id="check-list" class="chk"></ul></details>
+      </section>
+
+      <section class="s" aria-labelledby="t3">
+        <p class="cap">3 · ASK CLAUDE</p><h2 id="t3" class="sr-only">Ask Claude</h2>
+        {% if ask %}<form id="ask-form" class="ask"><input id="question" maxlength="200" value="Can they afford £1,050 a month?" aria-label="Question for Claude"><button class="send" type="submit" aria-label="Ask">↑</button></form>
+        <div id="answer" class="answer" aria-live="polite"></div>
+        {% else %}<p class="source">Claude is not connected here.</p>{% endif %}
+      </section>
+
+      <section class="s" aria-labelledby="t4">
+        <p class="cap">4 · CLAUDE TAKES THE DEPOSIT</p><h2 id="t4" class="sr-only">Deposit agent</h2>
+        {% if agent %}<form id="agent-form" class="agent">
+          <label class="cmd"><span>Rule</span><input id="rule" maxlength="300" value="{{ rule }}"></label>
+          <label class="cmd rent"><span>Rent £</span><input id="rent" type="number" min="100" max="10000" step="1" value="1050"></label>
+          <ul id="agent-steps" class="chk"></ul>
+          <p id="agent-message" class="agent-message"></p>
+          <button id="agent-run" class="go" type="submit">Run agent</button>
+          <a id="approve" class="go" href="#" hidden></a>
         </form>
-      </div>
-      {% if paypal %}<div class="upload-panel">
-        <div><h3>Or import from PayPal</h3><p>Fetch the transaction history of the connected PayPal sandbox account. The rows come straight from PayPal, so they cannot be edited before the checks run.</p></div>
-        <div class="upload-footer"><span class="field-note">Sandbox account · last six months · read-only</span><button id="paypal-import" type="button" class="primary">Import PayPal history <span aria-hidden="true">→</span></button></div>
-      </div>{% endif %}
-    </section>
+        {% else %}<p class="source">The agent needs PayPal and Claude.</p>{% endif %}
+      </section>
+    </div>
 
-    <div id="deposit-notice" class="status" role="status" hidden></div>
-    <div id="status" class="status" role="status" aria-live="polite" hidden></div>
-    <div id="error" class="error-box" role="alert" hidden><h2 id="error-title">We could not read this statement</h2><p id="error-message"></p></div>
+    <div id="status" class="notice busy" role="status" aria-live="polite" hidden></div>
+    <div id="error" class="error-box" role="alert" hidden><h2 id="error-title">Something went wrong</h2><p id="error-message"></p></div>
 
-    <section id="result" class="result" aria-labelledby="result-title" hidden>
-      <div class="section-heading"><div><p class="eyebrow">02 / Inspect the result</p><h2 id="result-title" tabindex="-1"></h2></div><span id="result-badge" class="result-badge"></span></div>
-      <p id="result-summary" class="section-copy"></p>
-      <p id="result-meta" class="result-meta"></p>
-      <div id="metrics" class="metrics"></div>
-      <section id="ai-reading" class="upload-panel" aria-labelledby="ai-title" hidden><h3 id="ai-title">Claude's reading</h3><p id="ai-note"></p><p id="ai-meta" class="field-note"></p><div id="ai-rows"></div></section>
-      <div id="report-bar" class="report-bar" hidden><div><h3>A summary to keep</h3><p>Download a demo PDF with the findings. The transaction rows stay out of the report.</p></div><button id="download-report" class="primary" type="button">Download demo PDF <span aria-hidden="true">↓</span></button></div>
-      {% if paypal %}<div id="deposit-bar" class="report-bar" hidden><div><h3>Pay a holding deposit</h3><p>Pay the landlord through PayPal Checkout (sandbox). In England a holding deposit is capped at one week's rent.</p></div><form id="deposit-form" class="field"><label for="deposit-amount">Amount (GBP)</label><input id="deposit-amount" type="number" min="1" max="5000" step="0.01" required><button class="primary" type="submit">Pay with PayPal <span aria-hidden="true">→</span></button></form></div>{% endif %}
-      <div class="checks-heading"><h3>What the checks found</h3><span>Expand a finding to inspect its evidence</span></div>
-      <div id="findings" class="findings"></div>
-      <p class="evidence-note">Evidence row numbers refer to the parsed statement, ordered as processed. At most 100 evidence rows are shown per finding.</p>
-    </section>
-
-    <aside class="limitations" aria-labelledby="limits-title"><div class="limit-label">Read the limits</div><div><h2 id="limits-title">Arithmetic is not authenticity.</h2><p>A fabricated statement that adds up can pass. These checks do not verify a bank, account holder, employer or source of funds. Recurring credits are an estimate of income; rent can be inferred from payment patterns. The first balance has no previous row to check.</p><p>Payment timing is compared with the usual day in the data, not a contractual due date. This prototype is not a credit score, affordability assessment or lending decision.</p></div></aside>
+    <details class="more">
+      <summary>Other statements</summary>
+      <div id="scenarios" class="scenario-grid" aria-label="Synthetic test scenarios"></div>
+      <form id="upload-form" class="upload-panel">
+        <div class="upload-fields"><div class="field"><label for="statement-file">CSV (date, description, amount, balance)</label><input type="file" id="statement-file" accept=".csv,text/csv" required></div>
+        <div class="field"><label for="currency">Currency</label><select id="currency" required><option value="">Select</option>{% for code, label in currencies.items() %}<option value="{{ code }}">{{ label }}</option>{% endfor %}</select></div></div>
+        <div class="upload-footer"><a href="/samples/download.zip" class="text-link">Test pack ↓</a><button type="submit" class="primary">Check CSV →</button></div>
+      </form>
+      <button id="download-report" class="ghost" type="button" hidden>Download PDF summary ↓</button>
+    </details>
   </main>
-  <footer><span>Credit Passport</span><span>Synthetic CSV demonstration · Original-currency figures · No bank connection</span></footer>
+  <footer><span>Credit Passport</span><span>Fixed-rule checks, not a credit score · PayPal sandbox · Fictional sample data</span></footer>
 </body>
 </html>

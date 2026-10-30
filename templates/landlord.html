@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{{ offer.name }} · Credit Passport</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/landlord.js" defer></script>
+</head>
+<body class="landlord-page">
+  <main class="phone" data-token="{{ token }}">
+    <div class="ps">
+      <p class="who-line"><b>{{ offer.name }}</b>{% if offer.verified %} <span class="ok">✓ PayPal verified</span>{% endif %}</p>
+      <div class="card">
+        <div class="big">£{{ "{:,}".format(offer.income) }}</div>
+        <div class="lab">a month, from {{ "sample " if offer.history == "Sample" else "" }}PayPal history</div>
+        <div class="k3"><span><b>{{ offer.record or "–" }}</b>rent on time</span><span><b>{{ offer.share }}%</b>of income on £{{ "{:,.0f}".format(offer.rent|float) }} rent</span></div>
+      </div>
+      <div class="held"><span>Deposit held</span><span>{{ offer.deposit|replace("GBP ", "£") }}</span></div>
+      {% if offer.series %}<div class="held rentline"><span>Rent invoices</span><span>monthly</span></div>{% endif %}
+      <div class="btns" id="decision">
+        <button class="go" type="button" data-decision="accept">Accept</button>
+        <button class="ghost" type="button" data-decision="refund">Refund</button>
+      </div>
+      <p id="outcome" class="outcome" role="status" hidden></p>
+    </div>
+  </main>
+</body>
+</html>

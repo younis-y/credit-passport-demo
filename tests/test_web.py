@@ -26,9 +26,9 @@ def upload(client, contents=None, filename="statement.csv", currency="SGD", endp
 def test_home_and_assets_are_accessible_and_demo_labelled(client):
     home = client.get("/")
     assert home.status_code == 200
-    assert b"Synthetic demo" in home.data
-    assert b"Arithmetic is not authenticity" in home.data
-    assert b"Select currency" in home.data
+    assert b"Can it be faked?" in home.data
+    assert b"not a credit score" in home.data
+    assert b"Currency" in home.data
     assert client.get("/styles.css").status_code == 200
     assert client.get("/app.js").status_code == 200
     assert "frame-ancestors 'none'" in home.headers["Content-Security-Policy"]
@@ -53,7 +53,8 @@ def test_successful_analysis_returns_actual_evidence_and_correct_period(client):
     assert response.status_code == 200
     data = response.json
     assert data["balanced"] is True
-    assert data["metrics"] == {"income": 4800.0, "rent": 1600.0, "ratio": 1 / 3}
+    assert data["metrics"] == {"income": 4800.0, "rent": 1600.0, "ratio": 1 / 3, "rent_record": "6/6"}
+    assert data["rows"][0]["row"] == 1 and len(data["rows"]) == data["row_count"]
     assert data["currency"] == "SGD"
     assert data["period"] == ["2026-04-01", "2026-09-30"]
     assert data["source"] == "Bundled synthetic sample"

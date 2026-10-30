@@ -15,6 +15,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import pandas as pd
 
@@ -23,6 +24,8 @@ from .parse import StatementError
 API_BASE = os.environ.get("PAYPAL_API_BASE", "https://api-m.sandbox.paypal.com")
 WINDOW = timedelta(days=31)  # Transaction Search refuses longer ranges
 ORDER_ID = re.compile(r"[A-Z0-9]{8,32}")
+SAMPLE = Path(__file__).resolve().parent.parent / "synthetic_demo" / "paypal-sample.json"
+WEB_BASE = API_BASE.replace("api-m.", "www.")
 
 
 class PayPalError(StatementError):
@@ -50,7 +53,8 @@ def _request(method, path, *, token=None, body=None, form=None):
     req = urllib.request.Request(API_BASE + path, data=data, headers=headers, method=method)
     try:
         with urllib.request.urlopen(req, timeout=20) as response:
-            return json.load(response)
+            body = response.read()
+            return json.loads(body) if body else {}  # void answers 204 with no body
     except urllib.error.HTTPError as error:
         try:
             detail = json.load(error)
@@ -110,6 +114,15 @@ def statement_csv(days=183, now=None):
         start = stop
     if len(rows) < 2:
         raise PayPalError("This PayPal account has fewer than two transactions in the last six months.")
+    return _csv(rows)
+
+
+def sample_csv():
+    """A fictional freelancer's six months, stored in Transaction Search shape and mapped by the same code."""
+    return _csv(_rows(json.loads(SAMPLE.read_text())["transaction_details"]))
+
+
+def _csv(rows):
     table = pd.DataFrame(rows)
     # Running balances are per currency, so keep the account's main one.
     currency = table["currency"].mode().iloc[0]
@@ -120,10 +133,13 @@ def statement_csv(days=183, now=None):
     return table[["date", "description", "amount", "balance"]].to_csv(index=False).encode(), currency
 
 
-def create_order(value, currency, return_url, cancel_url):
-    """Create a Checkout order and return the PayPal page the payer approves it on."""
+def create_order(value, currency, return_url, cancel_url, intent="CAPTURE"):
+    """Create a Checkout order and return the PayPal page the payer approves it on.
+
+    intent="AUTHORIZE" holds the money on the payer's account until the landlord captures or voids it.
+    """
     order = _request("POST", "/v2/checkout/orders", token=_token(), body={
-        "intent": "CAPTURE",
+        "intent": intent,
         "purchase_units": [{"amount": {"currency_code": currency, "value": value}, "description": "Holding deposit"}],
         "payment_source": {"paypal": {"experience_context": {
             "brand_name": "Credit Passport",
@@ -136,11 +152,45 @@ def create_order(value, currency, return_url, cancel_url):
     return next(link["href"] for link in order["links"] if link["rel"] in ("payer-action", "approve"))
 
 
-def capture_order(order_id):
-    """Capture an approved order. Returns (status, capture id, amount text)."""
+def authorize_order(order_id):
+    """Place the hold on an approved AUTHORIZE order. Returns (authorization id, amount text)."""
     if not ORDER_ID.fullmatch(order_id or ""):
         raise PayPalError("That PayPal order reference is not valid.")
-    result = _request("POST", f"/v2/checkout/orders/{order_id}/capture", token=_token(), body={})
-    capture = result["purchase_units"][0]["payments"]["captures"][0]
-    amount = f"{capture['amount']['currency_code']} {capture['amount']['value']}"
-    return result["status"], capture["id"], amount
+    result = _request("POST", f"/v2/checkout/orders/{order_id}/authorize", token=_token(), body={})
+    hold = result["purchase_units"][0]["payments"]["authorizations"][0]
+    if hold["status"] not in ("CREATED", "PENDING"):
+        raise PayPalError(f"PayPal did not hold the deposit ({hold['status']}).")
+    return hold["id"], f"{hold['amount']['currency_code']} {hold['amount']['value']}"
+
+
+def settle_hold(authorization_id, accept):
+    """Landlord's decision: capture the held deposit, or void the hold so nothing is taken."""
+    if not ORDER_ID.fullmatch(authorization_id or ""):
+        raise PayPalError("That PayPal authorization reference is not valid.")
+    action = "capture" if accept else "void"
+    result = _request("POST", f"/v2/payments/authorizations/{authorization_id}/{action}", token=_token(), body={})
+    return (result or {}).get("id", authorization_id)
+
+
+def login_url(redirect_uri, state):
+    """Log in with PayPal: the applicant signs in so we see their own verified PayPal account."""
+    query = urllib.parse.urlencode({
+        "flowEntry": "static",
+        "client_id": os.environ["PAYPAL_CLIENT_ID"],
+        "response_type": "code",
+        "scope": "openid profile email https://uri.paypal.com/services/paypalattributes",
+        "redirect_uri": redirect_uri,
+        "state": state,
+    })
+    return f"{WEB_BASE}/signin/authorize?{query}"
+
+
+def login_profile(code):
+    """Exchange the login code and return the applicant's name, email and PayPal verified status."""
+    token = _request("POST", "/v1/oauth2/token", form={"grant_type": "authorization_code", "code": code})["access_token"]
+    info = _request("GET", "/v1/identity/openidconnect/userinfo?schema=openid", token=token)
+    return {
+        "name": info.get("name") or " ".join(filter(None, [info.get("given_name"), info.get("family_name")])),
+        "email": info.get("email", ""),
+        "verified": bool(info.get("verified_account") in (True, "true")),
+    }

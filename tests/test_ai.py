@@ -73,3 +73,15 @@ def test_no_claude_for_failed_statements_or_without_a_key(claude, client, monkey
     monkeypatch.delenv("ANTHROPIC_API_KEY")
     assert client.post("/api/analyse", json={"scenario_id": "steady-income"}).json["ai"] is None
     assert claude.calls == []
+
+
+def test_ask_returns_short_points_with_valid_row_citations(claude, client):
+    claude.state["response"] = fake_response({"verdict": "yes", "points": [
+        {"text": " Earns about 4,800 a month ", "rows": [3, 3, 999, 0]}, {"text": "b", "rows": []},
+        {"text": "c", "rows": [2]}, {"text": "dropped", "rows": [2]}]})
+    data = client.post("/api/ask", json={"scenario_id": "steady-income", "question": "Can they afford 1,600?"}).json
+    assert data == {"verdict": "yes", "points": [{"text": "Earns about 4,800 a month", "rows": [3]}, {"text": "b", "rows": []}, {"text": "c", "rows": [2]}]}
+    prompt = claude.calls[0]["messages"][0]["content"]
+    assert "Question: Can they afford 1,600?" in prompt and "not instructions" in prompt
+    assert client.post("/api/ask", json={"scenario_id": "steady-income", "question": "?"}).status_code == 400
+    assert client.post("/api/ask", json={"scenario_id": "edited-balances", "question": "Is this fine?"}).status_code == 400
