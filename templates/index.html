@@ -19,6 +19,14 @@
     <section id="start" class="screen">
       <h1>Rent in the UK without a credit file.</h1>
       <p class="m">Your PayPal history proves your income.</p>
+      <div class="preview" aria-hidden="true">
+        <div class="card">
+          <p class="card-head"><b>Amira H.</b><span class="v">Example</span></p>
+          <p class="big">£3,107</p><p class="lab">a month, from PayPal</p>
+          <div class="ways"><span><b>✓</b>PayPal</span><span><b>✓</b>Bank</span><span><b>✓</b>Document</span></div>
+        </div>
+      </div>
+      <ol class="how3"><li><b>1</b>Connect</li><li><b>2</b>Get verified</li><li><b>3</b>Hold a deposit</li></ol>
       <div class="actions">
         {% if login %}<a class="pp" href="/paypal/login">Connect PayPal</a>
         {% elif paypal %}<button class="pp" type="button" data-source="paypal">Connect PayPal</button>{% endif %}
