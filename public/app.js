@@ -1,10 +1,11 @@
 "use strict";
 
 const byId = (id) => document.getElementById(id);
-const SCREENS = ["start", "passport", "apply", "done"];
+const SCREENS = ["start", "passport", "checks", "caught", "apply", "done"];
 const RULE_SHARE = 0.35; // the landlord's rule the agent applies: rent under 35% of income
 let source = null;    // "paypal" or "paypal-sample"
 let statement = null; // its analysis
+let evidence = [];    // the passport's sources: PayPal, and for the sample also Bank and Document
 let busy = false;
 
 function node(tag, className, text) {
@@ -62,10 +63,11 @@ document.querySelectorAll("[data-source]").forEach((button) => {
 
 function openPassport(id) {
   return work(id === "paypal" ? "Reading your PayPal history…" : "Reading the sample history…", async () => {
-    const data = await call("/api/analyse", {scenario_id: id});
+    const [data, verified] = await Promise.all([call("/api/analyse", {scenario_id: id}), call("/api/verify", {scenario_id: id})]);
     if (!data.balanced) throw new Error("This history does not add up, so no passport was issued.");
     source = id;
     statement = data;
+    evidence = verified.sources;
     fillPassport(data);
     show("passport");
   });
@@ -86,29 +88,54 @@ function fillPassport(data) {
   byId("p-period").textContent = m.income ? `a month, last ${months(data.period)} months` : "no regular income yet";
   byId("p-record").textContent = m.rent_record || "–";
   byId("p-rows").textContent = Math.max(0, data.row_count - 1);
-  const list = byId("p-checks");
-  list.replaceChildren();
-  data.findings.forEach((finding, index) => {
-    const li = node("li");
-    li.style.animationDelay = `${index * 120}ms`;
-    li.title = finding.detail;
-    li.append(node("span", "", finding.label), node("b", finding.ok ? "ok" : "warn", finding.ok ? "✓" : "!"));
-    list.append(li);
+  const ways = byId("p-ways");
+  ways.replaceChildren();
+  evidence.forEach((group, index) => {
+    const way = node("span", group.ok ? "" : "off");
+    way.style.animationDelay = `${index * 150}ms`;
+    way.append(node("b", "", group.ok ? "✓" : "!"), document.createTextNode(group.name));
+    ways.append(way);
   });
+  const passed = evidence.filter((group) => group.ok).length;
+  byId("p-verified").textContent = `Verified ${passed} way${passed === 1 ? "" : "s"}`;
+  renderGroups(byId("groups"), evidence);
   byId("p-thin").hidden = Boolean(m.income);
   byId("to-apply").hidden = !m.income;
   byId("p-sample").hidden = Boolean(m.income);
-  byId("fake-result").hidden = true;
 }
 
+function renderGroups(container, groups) {
+  container.replaceChildren();
+  groups.forEach((group, index) => {
+    const box = node("div", group.ok ? "grp" : "grp red");
+    box.style.animationDelay = `${index * 120}ms`;
+    const head = node("p", "gh");
+    const name = node("span", "", group.name);
+    if (group.tag) name.append(node("i", "", group.tag));
+    head.append(name, node("span", group.ok ? "pill good" : "pill bad", group.ok ? "✓" : "✕"));
+    const list = node("ul", "items");
+    group.checks.forEach((check) => {
+      const li = node("li");
+      li.title = check.detail || "";
+      li.append(node("span", "", check.label), node("b", check.ok ? "ok" : "no", check.ok ? "✓" : "✕"));
+      list.append(li);
+    });
+    box.append(head, list);
+    container.append(box);
+  });
+}
+
+byId("how").addEventListener("click", () => show("checks"));
+document.querySelectorAll(".to-passport").forEach((button) => button.addEventListener("click", () => show("passport")));
+
+// The sample applicant's statement, after someone raised one PayPal transfer by £2,500 in Acrobat.
 byId("fake").addEventListener("click", () => work("Checking an edited statement…", async () => {
-  const data = await call("/api/analyse", {scenario_id: "edited-balances"});
-  const first = (data.findings[0].evidence || [])[0];
-  const off = first && first.expected_balance !== undefined
-    ? ` · row ${first.row} is off by ${data.currency} ${Math.abs(first.balance - first.expected_balance).toLocaleString("en-GB")}`
-    : "";
-  byId("fake-result").textContent = `✕ Edited statement rejected${off}`;
-  byId("fake-result").hidden = false;
+  const data = await call("/api/verify", {scenario_id: "paypal-sample", document: "edited"});
+  const groups = data.sources.filter((group) => group.name !== "PayPal");
+  const signs = groups.flatMap((group) => group.checks).filter((check) => !check.ok).length;
+  byId("fake-verdict").textContent = `✕ Rejected · ${signs} signs of editing`;
+  renderGroups(byId("fake-groups"), groups);
+  show("caught");
 }));
 
 byId("to-apply").addEventListener("click", () => {

@@ -119,7 +119,7 @@
      "value": "2710.50"
     },
     "transaction_event_code": "T0400",
-    "transaction_subject": "Transfer to Monzo"
+    "transaction_subject": "Transfer to Thames Bank"
    },
    "payer_info": {}
   },
@@ -242,7 +242,7 @@
      "value": "3520.46"
     },
     "transaction_event_code": "T0400",
-    "transaction_subject": "Transfer to Monzo"
+    "transaction_subject": "Transfer to Thames Bank"
    },
    "payer_info": {}
   },
@@ -388,7 +388,7 @@
      "value": "4893.30"
     },
     "transaction_event_code": "T0400",
-    "transaction_subject": "Transfer to Monzo"
+    "transaction_subject": "Transfer to Thames Bank"
    },
    "payer_info": {}
   },
@@ -511,7 +511,7 @@
      "value": "5751.81"
     },
     "transaction_event_code": "T0400",
-    "transaction_subject": "Transfer to Monzo"
+    "transaction_subject": "Transfer to Thames Bank"
    },
    "payer_info": {}
   },
@@ -634,7 +634,7 @@
      "value": "6590.90"
     },
     "transaction_event_code": "T0400",
-    "transaction_subject": "Transfer to Monzo"
+    "transaction_subject": "Transfer to Thames Bank"
    },
    "payer_info": {}
   },
@@ -780,7 +780,7 @@
      "value": "7934.61"
     },
     "transaction_event_code": "T0400",
-    "transaction_subject": "Transfer to Monzo"
+    "transaction_subject": "Transfer to Thames Bank"
    },
    "payer_info": {}
   },

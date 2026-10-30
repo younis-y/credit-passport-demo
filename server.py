@@ -23,7 +23,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
 
-from passport import agent, ai, paypal
+from passport import agent, ai, openbanking, paypal, pdfcheck
 
 from passport.parse import StatementError
 from passport.pipeline import run
@@ -195,6 +195,26 @@ def serialise_finding(finding):
     }
 
 
+BANK_PDFS = {"bank-statement": "genuine", "bank-statement-edited": "edited"}
+
+
+def sources(selected, data, currency, edited=False):
+    """The passport's evidence, grouped by where it came from. The sample applicant also has a
+    bank feed (simulated Open Banking) and a PDF statement; edited=True swaps in the doctored PDF."""
+    result = run("statement.csv", data, currency)
+    first = "Read from PayPal, not uploaded" if selected["id"] == "paypal" else "Sample in PayPal's API format"
+    out = [{"name": "PayPal", "tag": None, "checks": [{"label": first, "ok": True, "detail": selected["source"]}] + [
+        {"label": f.label, "ok": bool(f.ok), "detail": f.detail} for f in result.passport["findings"]]}]
+    if selected["id"] == "paypal-sample":
+        document = pdfcheck.check((DEMO_DIR / ("bank-statement-edited.pdf" if edited else "bank-statement.pdf")).read_bytes())
+        out.append({"name": "Bank", "tag": openbanking.TAG,
+                    "checks": openbanking.check(selected["applicant"], result.transactions, document["rows"])})
+        out.append({"name": "Document", "tag": "PDF", "checks": document["checks"]})
+    for source in out:
+        source["ok"] = all(check["ok"] for check in source["checks"])
+    return out
+
+
 def login_enabled():
     """Log in with PayPal must be switched on for the app in the PayPal developer dashboard first."""
     return paypal.configured() and os.environ.get("PAYPAL_LOGIN") == "1"
@@ -290,6 +310,20 @@ def create_app():
             ai=ai_block(data, result.currency) if balanced and ai.configured() else None,
         )
 
+    @app.get("/samples/<name>.pdf")
+    def download_bank_pdf(name):
+        if name not in BANK_PDFS:
+            abort(404)
+        return send_file(DEMO_DIR / f"{name}.pdf", mimetype="application/pdf", download_name=f"{name}.pdf")
+
+    @app.post("/api/verify")
+    def verify():
+        _name, data, currency, selected = read_input()
+        if (selected or {}).get("id") not in ("paypal", "paypal-sample"):
+            raise StatementError("Verification runs on a PayPal history.")
+        edited = (request.get_json(silent=True) or {}).get("document") == "edited"
+        return jsonify(sources=sources(selected, data, currency, edited))
+
     @app.post("/api/report")
     def report():
         name, data, currency, selected = read_input()
@@ -344,6 +378,8 @@ def create_app():
         except (anthropic.APIError, ValueError) as error:
             return jsonify(error=f"The agent could not finish: {str(error)[:200]}"), 502
         payer = session.get("payer") or {}
+        scenario = (selected or {}).get("id")
+        from_paypal = scenario in ("paypal", "paypal-sample")
         session["offer"] = {
             "name": payer.get("name") or (selected or {}).get("applicant") or "The applicant",
             "verified": bool(payer.get("verified")),
@@ -351,7 +387,8 @@ def create_app():
             "income": round(income), "rent": str(rent), "share": round(float(rent) / income * 100),
             "record": rent_record(result), "series": outcome["series_id"] if outcome["series_active"] else None,
             # The landlord's Ask Claude re-reads this history; uploads are not kept, so they get no questions.
-            "scenario": (selected or {}).get("id") if (selected or {}).get("id") in ("paypal", "paypal-sample") else None,
+            "scenario": scenario if from_paypal else None,
+            "ways": [s["name"] for s in sources(selected, data, currency) if s["ok"]] if from_paypal else [],
         }
         return jsonify(outcome)
 

@@ -5,3 +5,4 @@ anthropic==2.3.0
 pydantic==2.14.2
 requests==2.34.2
 httpx==0.28.1
+pypdf==6.21.4

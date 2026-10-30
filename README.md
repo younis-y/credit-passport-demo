@@ -35,7 +35,8 @@ Credit Passport is a Python prototype for people moving to the UK who want to sh
 ## Features
 
 - **PayPal verified income** for renters new to the UK: import PayPal history (live sandbox or a labelled sample), run the same balance checks, and show income, rent on time and rent share.
-- **Ask Claude** about the statement; each answer cites the statement rows behind it.
+- **Verified three ways**: PayPal history, a bank feed (simulated Open Banking, fictional Thames Bank) and the PDF statement. The PDF check reads which software last wrote the file, whether it was saved again after issue, and whether its rows add up; the bank feed then confirms every row. `scripts/make_bank_sample.py` makes a genuine PDF and a copy edited the way Acrobat saves it.
+- **Ask Claude** on the landlord's link; each answer cites the statement rows behind it.
 - **Deposit agent**: Claude applies the landlord's rule, holds one week's deposit on PayPal (authorise, not capture) and sets up monthly rent invoices with the PayPal Agent Toolkit, inside server-enforced limits.
 - **Landlord link**: a signed page where the landlord accepts (captures) or refunds (voids) the held deposit.
 - Read CSV statements locally or transcribe text-based PDF statements through Anthropic.

@@ -32,15 +32,29 @@
         <p class="card-head"><b id="p-name"></b><span id="p-badge" class="v"></span></p>
         <p class="big" id="p-income"></p><p class="lab" id="p-period"></p>
         <div class="k3"><span><b id="p-record"></b>rent on time</span><span><b id="p-rows"></b>payments checked</span></div>
+        <div id="p-ways" class="ways"></div>
       </div>
-      <ul id="p-checks" class="list"></ul>
+      <button id="how" class="row-link" type="button"><span id="p-verified"></span><b>How we checked ›</b></button>
       <p id="p-thin" class="m" hidden>Not enough history yet: the passport needs regular income.</p>
       <div class="actions">
         <button id="to-apply" class="go" type="button">Apply for a flat</button>
         <button id="fake" class="lnk" type="button">Try to fake it</button>
         <button id="p-sample" class="lnk" type="button" data-source="paypal-sample" hidden>See a sample passport</button>
       </div>
-      <p id="fake-result" class="bad-box" role="status" hidden></p>
+    </section>
+
+    <section id="checks" class="screen" hidden aria-labelledby="checks-title">
+      <h2 id="checks-title" class="top">How we checked</h2>
+      <div id="groups" class="groups"></div>
+      <div class="actions"><button class="lnk to-passport" type="button">Back to passport</button></div>
+    </section>
+
+    <section id="caught" class="screen" hidden aria-labelledby="fake-title">
+      <h2 id="fake-title" class="top">Edited statement</h2>
+      <p id="fake-verdict" class="bad-box"></p>
+      <div id="fake-groups" class="groups"></div>
+      <p class="m small">See for yourself: <a href="/samples/bank-statement-edited.pdf">edited PDF</a> · <a href="/samples/bank-statement.pdf">original</a></p>
+      <div class="actions"><button class="ghost to-passport" type="button">Back to passport</button></div>
     </section>
 
     <section id="apply" class="screen" hidden aria-labelledby="apply-title">

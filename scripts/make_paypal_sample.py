@@ -30,7 +30,7 @@ for i, month in enumerate(range(5, 11)):
     add(f"{m}-02", pay[i], payer="Northwind Studio Ltd", fee=-round(pay[i] * 0.029 + 0.30, 2), code="T0006")
     add(f"{m}-08", -68.40, subject="Octopus Energy", code="T0003")
     add(f"{m}-12", -18.00, subject="Three Mobile", code="T0003")
-    add(f"{m}-15", -1200.00, subject="Transfer to Monzo", code="T0400")
+    add(f"{m}-15", -1200.00, subject="Transfer to Thames Bank", code="T0400")
     if month in (6, 9):
         add(f"{m}-20", 480.00, payer="Atlas Media", fee=-round(480 * 0.029 + 0.30, 2), code="T0006")
     add(f"{m}-24", -11.99, subject="Spotify", code="T0003")

@@ -16,6 +16,7 @@
         <p class="card-head"><b>{{ offer.name }}</b><span class="v">{{ "✓ PayPal verified" if offer.verified else "Sample" if offer.history == "Sample" else "From PayPal" }}</span></p>
         <p class="big">£{{ "{:,}".format(offer.income) }}</p><p class="lab">a month</p>
         <div class="k3"><span><b>{{ offer.record or "–" }}</b>rent on time</span><span><b>{{ offer.share }}%</b>of income on £{{ "{:,.0f}".format(offer.rent|float) }} rent</span></div>
+        {% if offer.ways %}<div class="ways">{% for way in offer.ways %}<span><b>✓</b>{{ way }}</span>{% endfor %}</div>{% endif %}
       </div>
       <p class="held"><span>Deposit held</span><span>{{ offer.deposit|replace("GBP ", "£") }}</span></p>
       {% if offer.series %}<p class="held blue"><span>Rent</span><span>monthly via PayPal</span></p>{% endif %}

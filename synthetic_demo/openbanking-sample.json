@@ -1,0 +1,492 @@
+{
+ "Data": {
+  "Account": {
+   "AccountId": "tb-0001",
+   "Nickname": "Current account",
+   "Name": "Amira Haddad",
+   "Servicer": "Thames Bank"
+  },
+  "Transaction": [
+   {
+    "BookingDateTime": "2026-05-05T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "64.20",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Tesco Stores",
+    "Balance": {
+     "Amount": {
+      "Amount": "355.80",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-05-15T09:00:00+00:00",
+    "CreditDebitIndicator": "Credit",
+    "Amount": {
+     "Amount": "1200.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "PayPal transfer",
+    "Balance": {
+     "Amount": {
+      "Amount": "1555.80",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-05-18T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "86.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "TfL Travel",
+    "Balance": {
+     "Amount": {
+      "Amount": "1469.80",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-05-22T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "9.85",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Pret A Manger",
+    "Balance": {
+     "Amount": {
+      "Amount": "1459.95",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-05-27T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "148.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Hackney Council Tax",
+    "Balance": {
+     "Amount": {
+      "Amount": "1311.95",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-06-05T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "64.20",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Tesco Stores",
+    "Balance": {
+     "Amount": {
+      "Amount": "1247.75",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-06-15T09:00:00+00:00",
+    "CreditDebitIndicator": "Credit",
+    "Amount": {
+     "Amount": "1200.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "PayPal transfer",
+    "Balance": {
+     "Amount": {
+      "Amount": "2447.75",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-06-18T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "86.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "TfL Travel",
+    "Balance": {
+     "Amount": {
+      "Amount": "2361.75",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-06-22T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "9.85",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Pret A Manger",
+    "Balance": {
+     "Amount": {
+      "Amount": "2351.90",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-06-27T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "148.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Hackney Council Tax",
+    "Balance": {
+     "Amount": {
+      "Amount": "2203.90",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-07-05T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "64.20",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Tesco Stores",
+    "Balance": {
+     "Amount": {
+      "Amount": "2139.70",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-07-15T09:00:00+00:00",
+    "CreditDebitIndicator": "Credit",
+    "Amount": {
+     "Amount": "1200.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "PayPal transfer",
+    "Balance": {
+     "Amount": {
+      "Amount": "3339.70",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-07-18T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "86.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "TfL Travel",
+    "Balance": {
+     "Amount": {
+      "Amount": "3253.70",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-07-22T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "9.85",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Pret A Manger",
+    "Balance": {
+     "Amount": {
+      "Amount": "3243.85",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-07-27T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "148.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Hackney Council Tax",
+    "Balance": {
+     "Amount": {
+      "Amount": "3095.85",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-08-05T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "64.20",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Tesco Stores",
+    "Balance": {
+     "Amount": {
+      "Amount": "3031.65",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-08-15T09:00:00+00:00",
+    "CreditDebitIndicator": "Credit",
+    "Amount": {
+     "Amount": "1200.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "PayPal transfer",
+    "Balance": {
+     "Amount": {
+      "Amount": "4231.65",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-08-18T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "86.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "TfL Travel",
+    "Balance": {
+     "Amount": {
+      "Amount": "4145.65",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-08-22T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "9.85",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Pret A Manger",
+    "Balance": {
+     "Amount": {
+      "Amount": "4135.80",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-08-27T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "148.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Hackney Council Tax",
+    "Balance": {
+     "Amount": {
+      "Amount": "3987.80",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-09-05T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "64.20",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Tesco Stores",
+    "Balance": {
+     "Amount": {
+      "Amount": "3923.60",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-09-15T09:00:00+00:00",
+    "CreditDebitIndicator": "Credit",
+    "Amount": {
+     "Amount": "1200.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "PayPal transfer",
+    "Balance": {
+     "Amount": {
+      "Amount": "5123.60",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-09-18T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "86.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "TfL Travel",
+    "Balance": {
+     "Amount": {
+      "Amount": "5037.60",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-09-22T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "9.85",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Pret A Manger",
+    "Balance": {
+     "Amount": {
+      "Amount": "5027.75",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-09-27T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "148.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Hackney Council Tax",
+    "Balance": {
+     "Amount": {
+      "Amount": "4879.75",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-10-05T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "64.20",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Tesco Stores",
+    "Balance": {
+     "Amount": {
+      "Amount": "4815.55",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-10-15T09:00:00+00:00",
+    "CreditDebitIndicator": "Credit",
+    "Amount": {
+     "Amount": "1200.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "PayPal transfer",
+    "Balance": {
+     "Amount": {
+      "Amount": "6015.55",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-10-18T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "86.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "TfL Travel",
+    "Balance": {
+     "Amount": {
+      "Amount": "5929.55",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-10-22T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "9.85",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Pret A Manger",
+    "Balance": {
+     "Amount": {
+      "Amount": "5919.70",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   },
+   {
+    "BookingDateTime": "2026-10-27T09:00:00+00:00",
+    "CreditDebitIndicator": "Debit",
+    "Amount": {
+     "Amount": "148.00",
+     "Currency": "GBP"
+    },
+    "TransactionInformation": "Hackney Council Tax",
+    "Balance": {
+     "Amount": {
+      "Amount": "5771.70",
+      "Currency": "GBP"
+     },
+     "CreditDebitIndicator": "Credit"
+    }
+   }
+  ]
+ }
+}
