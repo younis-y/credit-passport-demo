@@ -26,9 +26,9 @@ def upload(client, contents=None, filename="statement.csv", currency="SGD", endp
 def test_home_and_assets_are_accessible_and_demo_labelled(client):
     home = client.get("/")
     assert home.status_code == 200
-    assert b"Can it be faked?" in home.data
-    assert b"not a credit score" in home.data
-    assert b"Currency" in home.data
+    assert b"Rent in the UK without a credit file." in home.data
+    assert b"Not a credit score" in home.data
+    assert b"Try to fake it" in home.data
     assert client.get("/styles.css").status_code == 200
     assert client.get("/app.js").status_code == 200
     assert "frame-ancestors 'none'" in home.headers["Content-Security-Policy"]

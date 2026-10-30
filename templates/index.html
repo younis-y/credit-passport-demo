@@ -3,90 +3,76 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Verified income from PayPal history, for renters new to the UK.">
+  <meta name="description" content="Rent in the UK without a credit file: your PayPal history proves your income.">
   <title>Credit Passport</title>
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
-<body>
-  <header class="site-header">
+<body class="app-page">
+  <header class="bar">
     <a href="/" class="brand" aria-label="Credit Passport home"><span class="brand-mark" aria-hidden="true">CP</span>Credit Passport</a>
-    <div class="header-right">
-      {% if payer %}<span class="who">{{ payer.name }}{% if payer.verified %} <b class="ok">✓ PayPal verified</b>{% endif %}</span>
-      {% elif login %}<a class="login" href="/paypal/login">Log in with PayPal</a>
-      {% else %}<span class="demo-pill">PayPal sandbox</span>{% endif %}
-    </div>
+    {% if payer %}<span class="who">{{ payer.name }}{% if payer.verified %} <b class="ok">✓ PayPal verified</b>{% endif %}</span>
+    {% else %}<span class="pill">PayPal sandbox</span>{% endif %}
   </header>
-  <main>
-    <section class="hero">
-      <h1>Verified income,<br>straight from PayPal.</h1>
-      <p class="intro">For renters new to the UK, with no credit file.</p>
+
+  <main class="app">
+    <section id="start" class="screen">
+      <h1>Rent in the UK without a credit file.</h1>
+      <p class="m">Your PayPal history proves your income.</p>
+      <div class="actions">
+        {% if login %}<a class="pp" href="/paypal/login">Connect PayPal</a>
+        {% elif paypal %}<button class="pp" type="button" data-source="paypal">Connect PayPal</button>{% endif %}
+        <button class="{{ 'lnk' if paypal else 'go' }}" type="button" data-source="paypal-sample">Try a sample account</button>
+      </div>
     </section>
 
-    <div id="notice" class="notice" role="status" hidden></div>
-    <section id="handoff" class="s wide" hidden aria-labelledby="handoff-title">
-      <p class="cap">5 · LANDLORD'S LINK</p>
-      <div class="handoff"><div><h2 id="handoff-title">Deposit held</h2><p class="big" id="handoff-amount"></p></div>
-      <div class="handoff-actions"><a id="landlord-link" class="go" href="#">Open landlord view ↗</a><button id="copy-link" class="ghost" type="button">Copy link</button></div></div>
+    <section id="passport" class="screen" hidden aria-labelledby="passport-title">
+      <h2 id="passport-title" class="top">Your passport</h2>
+      <div class="card">
+        <p class="card-head"><b id="p-name"></b><span id="p-badge" class="v"></span></p>
+        <p class="big" id="p-income"></p><p class="lab" id="p-period"></p>
+        <div class="k3"><span><b id="p-record"></b>rent on time</span><span><b id="p-rows"></b>payments checked</span></div>
+      </div>
+      <ul id="p-checks" class="list"></ul>
+      <p id="p-thin" class="m" hidden>Not enough history yet: the passport needs regular income.</p>
+      <div class="actions">
+        <button id="to-apply" class="go" type="button">Apply for a flat</button>
+        <button id="fake" class="lnk" type="button">Try to fake it</button>
+        <button id="p-sample" class="lnk" type="button" data-source="paypal-sample" hidden>See a sample passport</button>
+      </div>
+      <p id="fake-result" class="bad-box" role="status" hidden></p>
     </section>
 
-    <div class="story">
-      <section class="s" aria-labelledby="t1">
-        <p class="cap">1 · TAMPER TEST</p><h2 id="t1">Can it be faked?</h2>
-        <div class="two">
-          <button class="pane" type="button" data-scenario="edited-balances"><span class="ic">?</span><b>Edited file</b><span class="pane-note">Tap to check</span></button>
-          <button class="pane" type="button" data-scenario="paypal-sample"><span class="ic">?</span><b>PayPal</b><span class="pane-note">Tap to check</span></button>
-        </div>
-      </section>
+    <section id="apply" class="screen" hidden aria-labelledby="apply-title">
+      <h2 id="apply-title" class="top">Flat 2, Dalston Lane</h2>
+      <label class="in"><span>Rent</span><span>£<input id="rent" type="number" min="100" max="10000" step="1" value="1050" aria-label="Monthly rent in pounds"> / month</span></label>
+      <p id="afford" class="ok-box"></p>
+      <p class="held"><span>Holding deposit</span><span id="deposit"></span></p>
+      <p class="held blue"><span>Rent</span><span>monthly via PayPal</span></p>
+      <p class="m small">Held, not taken, until the landlord accepts.</p>
+      <ul id="steps" class="list" aria-live="polite"></ul>
+      <p id="agent-message" class="m small"></p>
+      <div class="actions">
+        {% if agent %}<button id="pay" class="pp" type="button">Pay with PayPal</button>{% else %}<p class="m small">Payments are not connected here.</p>{% endif %}
+        <a id="approve" class="pp" href="#" hidden></a>
+        <button id="back" class="lnk" type="button">Back to passport</button>
+      </div>
+    </section>
 
-      <section class="s" id="statement" aria-labelledby="t2">
-        <p class="cap">2 · FROM PAYPAL</p>
-        <div class="row-between"><h2 id="t2">Statement</h2>
-          <div class="chips">
-            <button class="chip" type="button" data-scenario="paypal-sample">Sample</button>
-            {% if paypal %}<button class="chip" type="button" data-scenario="paypal">My PayPal</button>{% endif %}
-          </div></div>
-        <p id="source" class="source">Pick a source</p>
-        <div id="kpis" class="kpis" hidden></div>
-        <div class="rows"><table><tbody id="rows"></tbody></table></div>
-        <details id="checks" class="checks" hidden><summary>Checks</summary><ul id="check-list" class="chk"></ul></details>
-      </section>
+    <section id="done" class="screen" hidden aria-labelledby="done-title">
+      <h2 id="done-title" class="top">Sent to your landlord</h2>
+      <p class="held big-held"><span>Deposit held</span><span id="done-amount"></span></p>
+      <p class="m">They accept or refund it from their link.</p>
+      <div class="actions">
+        <a id="landlord-link" class="go" href="#">Open landlord view ↗</a>
+        <button id="copy-link" class="ghost" type="button">Copy link</button>
+      </div>
+    </section>
 
-      <section class="s" aria-labelledby="t3">
-        <p class="cap">3 · ASK CLAUDE</p><h2 id="t3" class="sr-only">Ask Claude</h2>
-        {% if ask %}<form id="ask-form" class="ask"><input id="question" maxlength="200" value="Can they afford £1,050 a month?" aria-label="Question for Claude"><button class="send" type="submit" aria-label="Ask">↑</button></form>
-        <div id="answer" class="answer" aria-live="polite"></div>
-        {% else %}<p class="source">Claude is not connected here.</p>{% endif %}
-      </section>
-
-      <section class="s" aria-labelledby="t4">
-        <p class="cap">4 · CLAUDE TAKES THE DEPOSIT</p><h2 id="t4" class="sr-only">Deposit agent</h2>
-        {% if agent %}<form id="agent-form" class="agent">
-          <label class="cmd"><span>Rule</span><input id="rule" maxlength="300" value="{{ rule }}"></label>
-          <label class="cmd rent"><span>Rent £</span><input id="rent" type="number" min="100" max="10000" step="1" value="1050"></label>
-          <ul id="agent-steps" class="chk"></ul>
-          <p id="agent-message" class="agent-message"></p>
-          <button id="agent-run" class="go" type="submit">Run agent</button>
-          <a id="approve" class="go" href="#" hidden></a>
-        </form>
-        {% else %}<p class="source">The agent needs PayPal and Claude.</p>{% endif %}
-      </section>
-    </div>
-
-    <div id="status" class="notice busy" role="status" aria-live="polite" hidden></div>
-    <div id="error" class="error-box" role="alert" hidden><h2 id="error-title">Something went wrong</h2><p id="error-message"></p></div>
-
-    <details class="more">
-      <summary>Other statements</summary>
-      <div id="scenarios" class="scenario-grid" aria-label="Synthetic test scenarios"></div>
-      <form id="upload-form" class="upload-panel">
-        <div class="upload-fields"><div class="field"><label for="statement-file">CSV (date, description, amount, balance)</label><input type="file" id="statement-file" accept=".csv,text/csv" required></div>
-        <div class="field"><label for="currency">Currency</label><select id="currency" required><option value="">Select</option>{% for code, label in currencies.items() %}<option value="{{ code }}">{{ label }}</option>{% endfor %}</select></div></div>
-        <div class="upload-footer"><a href="/samples/download.zip" class="text-link">Test pack ↓</a><button type="submit" class="primary">Check CSV →</button></div>
-      </form>
-      <button id="download-report" class="ghost" type="button" hidden>Download PDF summary ↓</button>
-    </details>
+    <p id="notice" class="notice" role="status" hidden></p>
+    <p id="status" class="busy" role="status" aria-live="polite" hidden></p>
+    <p id="error" class="bad-box" role="alert" hidden></p>
   </main>
-  <footer><span>Credit Passport</span><span>Fixed-rule checks, not a credit score · PayPal sandbox · Fictional sample data</span></footer>
+  <footer>Not a credit score · PayPal sandbox · Sample data is fictional</footer>
 </body>
 </html>

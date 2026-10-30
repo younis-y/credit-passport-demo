@@ -101,4 +101,4 @@ def test_agent_route_bounds_rent_and_remembers_the_offer(world):
         with client.session_transaction() as session:
             offer = session["offer"]
     assert offer == {"name": "Amira Haddad", "verified": False, "history": "Sample", "income": 3107,
-                     "rent": "1050.00", "share": 34, "record": "6/6", "series": "RI-1"}
+                     "rent": "1050.00", "share": 34, "record": "6/6", "series": "RI-1", "scenario": "paypal-sample"}

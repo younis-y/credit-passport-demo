@@ -240,8 +240,7 @@ def create_app():
     @app.get("/")
     def index():
         return render_template(
-            "index.html", currencies=CURRENCIES, paypal=paypal.configured(), agent=agent.configured(),
-            ask=ai.configured(), login=login_enabled(), payer=session.get("payer"), rule=DEFAULT_RULE,
+            "index.html", paypal=paypal.configured(), agent=agent.configured(), login=login_enabled(), payer=session.get("payer"),
         )
 
     @app.get("/api/scenarios")
@@ -351,6 +350,8 @@ def create_app():
             "history": "PayPal" if (selected or {}).get("id") == "paypal" else "Sample" if selected else "Upload",
             "income": round(income), "rent": str(rent), "share": round(float(rent) / income * 100),
             "record": rent_record(result), "series": outcome["series_id"] if outcome["series_active"] else None,
+            # The landlord's Ask Claude re-reads this history; uploads are not kept, so they get no questions.
+            "scenario": (selected or {}).get("id") if (selected or {}).get("id") in ("paypal", "paypal-sample") else None,
         }
         return jsonify(outcome)
 
@@ -374,7 +375,7 @@ def create_app():
             offer = signer.loads(token)
         except BadSignature:
             abort(404)
-        return render_template("landlord.html", offer=offer, token=token)
+        return render_template("landlord.html", offer=offer, token=token, ask=ai.configured())
 
     @app.post("/api/l/<token>/<decision>")
     def landlord_decision(token, decision):
@@ -403,7 +404,7 @@ def create_app():
             session["payer"] = paypal.login_profile(request.args["code"])
         except paypal.PayPalError:
             return redirect("/?login=failed")
-        return redirect("/")
+        return redirect("/?connected=1")
 
     return app
 

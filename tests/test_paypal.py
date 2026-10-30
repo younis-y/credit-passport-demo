@@ -128,7 +128,7 @@ def test_sample_history_is_mapped_by_the_same_code_and_passes(client):
 
 def test_paypal_is_hidden_and_refused_when_not_configured(client, monkeypatch):
     monkeypatch.delenv("PAYPAL_CLIENT_ID", raising=False)
-    assert b'data-scenario="paypal"' not in client.get("/").data
+    assert b'data-source="paypal"' not in client.get("/").data
     assert client.post("/api/analyse", json={"scenario_id": "paypal"}).status_code == 400
     assert client.post("/api/agent", json={"scenario_id": "paypal-sample", "rent": "1050"}).status_code == 404
     assert client.get("/paypal/login").status_code == 404
@@ -137,14 +137,14 @@ def test_paypal_is_hidden_and_refused_when_not_configured(client, monkeypatch):
 def test_return_places_a_hold_and_signs_a_landlord_link(fake_paypal, client):
     with client.session_transaction() as session:
         session["offer"] = {"name": "Amira Haddad", "verified": False, "history": "Sample", "income": 3107,
-                            "rent": "1050.00", "share": 34, "record": "6/6", "series": "RI-1"}
+                            "rent": "1050.00", "share": 34, "record": "6/6", "series": "RI-1", "scenario": "paypal-sample"}
     done = client.get("/paypal/return?token=5O190127TN364715T")
     assert done.status_code == 302
     query = parse_qs(urlparse(done.location).query)
     assert query["deposit"] == ["held"] and query["amount"] == ["GBP 242.30"]
     page = client.get(f"/l/{query['landlord'][0]}")
     assert page.status_code == 200
-    assert b"Amira Haddad" in page.data and "£242.30".encode() in page.data and "£1,050 rent".encode() in page.data and b"6/6" in page.data
+    assert b"Amira Haddad" in page.data and b'data-scenario="paypal-sample"' in page.data and "£242.30".encode() in page.data and "£1,050 rent".encode() in page.data and b"6/6" in page.data
     assert client.get(f"/l/{query['landlord'][0]}x").status_code == 404
     accept = client.post(f"/api/l/{query['landlord'][0]}/accept")
     assert accept.json == {"status": "captured", "reference": "7KP11111AA2222222"}
@@ -170,5 +170,5 @@ def test_login_checks_state_and_keeps_the_verified_profile(fake_paypal, client, 
     client.get("/paypal/login")
     with client.session_transaction() as session:
         state = session["login_state"]
-    assert client.get(f"/paypal/login/return?code=abc&state={state}").location == "/"
+    assert client.get(f"/paypal/login/return?code=abc&state={state}").location == "/?connected=1"
     assert b"PayPal verified" in client.get("/").data
