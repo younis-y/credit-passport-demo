@@ -126,4 +126,8 @@ def ask(tx, findings, currency, question):
         {"text": point["text"].strip(), "rows": sorted({r for r in point["rows"] if 1 <= r <= count})}
         for point in data["points"][:3]
     ]
-    return {"verdict": data["verdict"], "points": points}
+    # The cited rows themselves, so the landlord can open each point's evidence.
+    cited = sorted({r for point in points for r in point["rows"]})
+    evidence = {str(r): {"date": f"{tx.iloc[r - 1].date:%Y-%m-%d}", "text": str(tx.iloc[r - 1].description),
+                         "amount": round(float(tx.iloc[r - 1].amount), 2)} for r in cited}
+    return {"verdict": data["verdict"], "points": points, "evidence": evidence}

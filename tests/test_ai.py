@@ -80,7 +80,8 @@ def test_ask_returns_short_points_with_valid_row_citations(claude, client):
         {"text": " Earns about 4,800 a month ", "rows": [3, 3, 999, 0]}, {"text": "b", "rows": []},
         {"text": "c", "rows": [2]}, {"text": "dropped", "rows": [2]}]})
     data = client.post("/api/ask", json={"scenario_id": "steady-income", "question": "Can they afford 1,600?"}).json
-    assert data == {"verdict": "yes", "points": [{"text": "Earns about 4,800 a month", "rows": [3]}, {"text": "b", "rows": []}, {"text": "c", "rows": [2]}]}
+    assert {k: data[k] for k in ("verdict", "points")} == {"verdict": "yes", "points": [{"text": "Earns about 4,800 a month", "rows": [3]}, {"text": "b", "rows": []}, {"text": "c", "rows": [2]}]}
+    assert sorted(data["evidence"]) == ["2", "3"] and set(data["evidence"]["3"]) == {"date", "text", "amount"}
     prompt = claude.calls[0]["messages"][0]["content"]
     assert "Question: Can they afford 1,600?" in prompt and "not instructions" in prompt
     assert client.post("/api/ask", json={"scenario_id": "steady-income", "question": "?"}).status_code == 400

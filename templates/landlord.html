@@ -23,11 +23,14 @@
         <p><span>Deposit held</span><b>{{ offer.deposit|replace("GBP ", "£") }}</b></p>
         {% if offer.series %}<p><span>Rent paid</span><b>Monthly via PayPal</b></p>{% endif %}
       </div>
-      {% if ask and offer.scenario %}<form id="ask-form" class="ask">
-        <input id="question" maxlength="200" value="Is the income steady?" aria-label="Ask Claude about this applicant">
+      {% if ask and offer.scenario %}<div class="ask-box">
+      <p class="ask-title">Ask Claude about {{ offer.name.split()[0] }}</p>
+      <div class="suggest">{% for label, q in [("Steady income?", "Is the income steady?"), ("Can they afford it?", "Can they afford the rent?"), ("Anything unusual?", "Is there anything unusual in the payments?")] %}<button type="button" class="chip" data-q="{{ q }}">{{ label }}</button>{% endfor %}</div>
+      <form id="ask-form" class="ask">
+        <input id="question" maxlength="200" placeholder="Or type a question" aria-label="Ask Claude about this applicant">
         <button class="send" type="submit" aria-label="Ask Claude">↑</button>
       </form>
-      <div id="answer" class="answer" aria-live="polite"></div>{% endif %}
+      <div id="answer" class="answer" aria-live="polite"></div></div>{% endif %}
       <div class="btns" id="decision">
         <button class="go" type="button" data-decision="accept">Accept</button>
         <button class="ghost" type="button" data-decision="refund">Refund</button>
