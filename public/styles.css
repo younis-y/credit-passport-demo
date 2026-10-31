@@ -7,9 +7,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #9dbc
 h1,h2,p{margin:0}[hidden]{display:none!important}
 
 /* Tenant app */
-.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.brand{color:var(--ink);display:flex;gap:10px;align-items:center;font-weight:650;letter-spacing:-.02em}
-.brand-mark{display:block;width:32px;height:32px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0 18px;border-bottom:1px solid var(--line)}
+.brand{color:var(--ink);display:flex;gap:12px;align-items:center;font-size:20px;font-weight:700;letter-spacing:-.03em}
+.brand-mark{display:block;width:44px;height:44px}
 .seal{margin-left:auto;display:block}
 .pill{background:var(--blue-pale);color:#315b9f;border:1px solid #dae6fa;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600}
 .who{font-size:13px}.who .ok{color:var(--green);margin-left:4px}
