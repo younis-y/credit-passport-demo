@@ -18,8 +18,10 @@
         <div class="k3"><span><b>{{ offer.record or "–" }}</b>rent on time</span><span><b>{{ offer.share }}%</b>of income on £{{ "{:,.0f}".format(offer.rent|float) }} rent</span></div>
         {% if offer.ways %}<div class="ways">{% for way in offer.ways %}<span><b>✓</b>{{ way }}</span>{% endfor %}</div>{% endif %}
       </div>
-      <p class="held"><span>Deposit held</span><span>{{ offer.deposit|replace("GBP ", "£") }}</span></p>
-      {% if offer.series %}<p class="held blue"><span>Rent</span><span>monthly via PayPal</span></p>{% endif %}
+      <div class="facts">
+        <p><span>Deposit held</span><b>{{ offer.deposit|replace("GBP ", "£") }}</b></p>
+        {% if offer.series %}<p><span>Rent paid</span><b>Monthly via PayPal</b></p>{% endif %}
+      </div>
       {% if ask and offer.scenario %}<form id="ask-form" class="ask">
         <input id="question" maxlength="200" value="Is the income steady?" aria-label="Ask Claude about this applicant">
         <button class="send" type="submit" aria-label="Ask Claude">↑</button>

@@ -145,12 +145,14 @@ byId("to-apply").addEventListener("click", () => {
 
 // 3 · Apply
 function updateRent() {
-  const rent = Number(byId("rent").value || 0);
+  const rentInput = byId("rent");
+  const rent = Number(rentInput.value || 0);
   const income = statement.metrics.income;
   const share = rent / income;
   const afford = byId("afford");
-  afford.textContent = share < RULE_SHARE ? `✓ Affordable · ${Math.round(share * 100)}% of income` : `Over the 35% limit · ${Math.round(share * 100)}% of income`;
-  afford.className = share < RULE_SHARE ? "ok-box" : "warn-box";
+  afford.textContent = share < RULE_SHARE ? `✓ ${Math.round(share * 100)}% of income` : `${Math.round(share * 100)}% · over 35%`;
+  afford.className = share < RULE_SHARE ? "tag good" : "tag warn";
+  rentInput.style.width = `${Math.max(String(rentInput.value).length, 2) + 0.3}ch`;
   // Holding deposit cap in England: one week's rent, annual rent / 52, rounded down to the penny.
   byId("deposit").textContent = pounds(Math.floor(rent * 12 / 52 * 100) / 100, 2);
   byId("steps").replaceChildren();

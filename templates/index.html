@@ -64,11 +64,13 @@
 
     <section id="apply" class="screen" hidden aria-labelledby="apply-title">
       <h2 id="apply-title" class="top">Flat 2, Dalston Lane</h2>
-      <label class="in"><span>Rent</span><span>£<input id="rent" type="number" min="100" max="10000" step="1" value="1050" aria-label="Monthly rent in pounds"> / month</span></label>
-      <p id="afford" class="ok-box"></p>
-      <p class="held"><span>Holding deposit</span><span id="deposit"></span></p>
-      <p class="held blue"><span>Rent</span><span>monthly via PayPal</span></p>
-      <p class="m small">Held, not taken, until the landlord accepts.</p>
+      <div class="facts">
+        <label><span>Rent</span><b>£<input id="rent" type="number" min="100" max="10000" step="1" value="1050" aria-label="Monthly rent in pounds"> / month</b></label>
+        <p><span>Affordability</span><b id="afford" class="tag good"></b></p>
+        <p><span>Holding deposit</span><b id="deposit"></b></p>
+        <p><span>Rent paid</span><b>Monthly via PayPal</b></p>
+      </div>
+      <p class="m small">The deposit is held, not taken, until the landlord accepts.</p>
       <ul id="steps" class="list" aria-live="polite"></ul>
       <p id="agent-message" class="m small"></p>
       <div class="actions">
@@ -80,7 +82,7 @@
 
     <section id="done" class="screen" hidden aria-labelledby="done-title">
       <h2 id="done-title" class="top">Sent to your landlord</h2>
-      <p class="held big-held"><span>Deposit held</span><span id="done-amount"></span></p>
+      <div class="facts"><p><span>Deposit held</span><b id="done-amount"></b></p></div>
       <p class="m">They accept or refund it from their link.</p>
       <div class="actions">
         <a id="landlord-link" class="go" href="#">Open landlord view ↗</a>
