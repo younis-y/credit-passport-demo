@@ -8,10 +8,10 @@ h1,h2,p{margin:0}[hidden]{display:none!important}
 
 /* Tenant app */
 .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0 18px;border-bottom:1px solid var(--line)}
-.brand{color:var(--ink);display:flex;gap:12px;align-items:center;font-size:20px;font-weight:700;letter-spacing:-.03em}
+.brand{white-space:nowrap;color:var(--ink);display:flex;gap:12px;align-items:center;font-size:20px;font-weight:700;letter-spacing:-.03em}
 .brand-mark{display:block;width:44px;height:44px}
 .seal{margin-left:auto;display:block}
-.pill{background:var(--blue-pale);color:#315b9f;border:1px solid #dae6fa;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600}
+.pill{white-space:nowrap;background:var(--blue-pale);color:#315b9f;border:1px solid #dae6fa;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600}
 .who{font-size:13px}.who .ok{color:var(--green);margin-left:4px}
 .app{width:min(420px,calc(100% - 28px));margin:28px auto 0;background:#fff;border:1px solid var(--line);border-radius:28px;padding:18px 20px 22px}
 .screen{padding-top:22px;min-height:520px;display:flex;flex-direction:column;gap:12px;animation:rise .35s ease-out}
@@ -62,7 +62,8 @@ footer{max-width:460px;margin:auto;padding:18px 20px 30px;text-align:center;font
 .btns{display:flex;gap:8px;margin-top:4px}.btns>*{flex:1}
 .outcome{text-align:center;font-weight:700;font-size:14px;padding:10px;border-radius:10px}.outcome.good{background:#eaf6ee;color:var(--green)}.outcome.bad{background:#fef3f2;color:var(--red)}
 
-@media(max-width:480px){.app{width:calc(100% - 20px);margin-top:10px;padding:16px 16px 18px}.screen{min-height:0}h1{font-size:30px;margin-top:8px}.actions{margin-top:18px}}
+@media(max-width:480px){.brand{font-size:18px;gap:10px}.brand-mark{width:40px;height:40px}.bar .pill{font-size:11px;padding:3px 8px}.app{width:calc(100% - 20px);margin-top:10px;padding:16px 16px 18px}.screen{min-height:0}h1{font-size:30px;margin-top:8px}.actions{margin-top:18px}}
+@media(max-width:340px){.bar .pill{display:none}}
 @media(prefers-reduced-motion:reduce){.screen,.list li,.a{animation:none}.busy::before{animation:none}}
 
 /* Evidence: where each part of the passport was checked */
