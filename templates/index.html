@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Rent in the UK without a credit file: your PayPal history proves your income.">
   <title>Credit Passport</title>
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
 <body class="app-page">
   <header class="bar">
-    <a href="/" class="brand" aria-label="Credit Passport home"><span class="brand-mark" aria-hidden="true">CP</span>Credit Passport</a>
+    <a href="/" class="brand" aria-label="Credit Passport home"><img class="brand-mark" src="/logo.svg" alt="" width="32" height="32">Credit Passport</a>
     {% if payer %}<span class="who">{{ payer.name }}{% if payer.verified %} <b class="ok">✓ PayPal verified</b>{% endif %}</span>
     {% else %}<span class="pill">PayPal sandbox</span>{% endif %}
   </header>
@@ -21,7 +22,7 @@
       <p class="m">Your PayPal history proves your income.</p>
       <div class="preview" aria-hidden="true">
         <div class="card">
-          <p class="card-head"><b>Amira H.</b></p>
+          <p class="card-head"><b>Amira H.</b><img class="seal" src="/logo-light.svg" alt="" width="34" height="34"></p>
           <p class="verified"><i>✓</i>Income verified</p>
           <div class="ways"><span><b>✓</b>PayPal</span><span><b>✓</b>Bank</span><span><b>✓</b>Document</span></div>
         </div>
@@ -34,7 +35,7 @@
     <section id="passport" class="screen" hidden aria-labelledby="passport-title">
       <h2 id="passport-title" class="top">Your passport</h2>
       <div class="card">
-        <p class="card-head"><b id="p-name"></b><span id="p-badge" class="v"></span></p>
+        <p class="card-head"><b id="p-name"></b><span id="p-badge" class="v"></span><img class="seal" src="/logo-light.svg" alt="" width="30" height="30"></p>
         <p class="big" id="p-income"></p><p class="lab" id="p-period"></p>
         <div class="k3"><span><b id="p-record"></b>rent on time</span><span><b id="p-rows"></b>payments checked</span></div>
         <div id="p-ways" class="ways"></div>

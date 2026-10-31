@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <title>{{ offer.name }} · Credit Passport</title>
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles.css">
   <script src="/landlord.js" defer></script>
 </head>
@@ -13,7 +14,7 @@
     <div class="ps">
       <p class="who-line">NEW APPLICANT</p>
       <div class="card">
-        <p class="card-head"><b>{{ offer.name }}</b><span class="v">{{ "✓ PayPal verified" if offer.verified else "Sample" if offer.history == "Sample" else "From PayPal" }}</span></p>
+        <p class="card-head"><b>{{ offer.name }}</b><span class="v">{{ "✓ PayPal verified" if offer.verified else "Sample" if offer.history == "Sample" else "From PayPal" }}</span><img class="seal" src="/logo-light.svg" alt="" width="30" height="30"></p>
         <p class="big">£{{ "{:,}".format(offer.income) }}</p><p class="lab">a month</p>
         <div class="k3"><span><b>{{ offer.record or "–" }}</b>rent on time</span><span><b>{{ offer.share }}%</b>of income on £{{ "{:,.0f}".format(offer.rent|float) }} rent</span></div>
         {% if offer.ways %}<div class="ways">{% for way in offer.ways %}<span><b>✓</b>{{ way }}</span>{% endfor %}</div>{% endif %}
